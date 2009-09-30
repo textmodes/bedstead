@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 
 #define XSIZE 6
@@ -201,7 +202,7 @@ doprologue(void)
 */
 
 typedef struct vec {
-	unsigned char x, y;
+	signed char x, y;
 } vec;
 
 typedef struct point {
@@ -296,49 +297,83 @@ vec_bearing(vec v)
 	if (v.x == v.y && v.x > 0) return 1;
 	if (v.x > 0 && v.y == 0) return 2;
 	if (v.x == -v.y && v.x > 0) return 3;
-	if (v.x == 0) return 4;
-	if (v.x == v.y) return 5;
-	if (v.y == 0) return 6;
-	if (v.x == -v.y) return 7;
+	if (v.x == 0 && v.y < 0) return 4;
+	if (v.x == v.y && v.x < 0) return 5;
+	if (v.x < 0 && v.y == 0) return 6;
+	if (v.x == -v.y && v.x < 0) return 7;
 	return -1;
 }
 
 static void
 fix_identical(point *p)
 {
-	if (vec_eqp (p->next->v, p->v))
+	if (vec_eqp(p->next->v, p->v)) {
+		fprintf(stderr, "identical points at (%d,%d)\n",
+		    p->v.x, p->v.y);
 		killpoint(p);
+	}
 }
 
 static int
-vec_inline(vec a, vec b, vec c)
+vec_inline3(vec a, vec b, vec c)
 {
-	return vec_eqp(a, b) || vec_eqp(b, c) ||
-	    vec_bearing(vec_sub(b, a)) == vec_bearing(vec_sub(c, b));
+	return
+	    vec_bearing(vec_sub(b, a)) == vec_bearing(vec_sub(c, b)) &&
+	    vec_bearing(vec_sub(b, a)) != -1;
+}
+
+static int
+vec_inline4(vec a, vec b, vec c, vec d)
+{
+	return vec_inline3(a, b, c) && vec_inline3(b, c, d);
 }
 
 static void
 fix_collinear(point *p)
 {
-	if (vec_inline(p->prev->v, p->v, p->next->v))
+	if (vec_inline3(p->prev->v, p->v, p->next->v)) {
+		fprintf(stderr, "collinear point at (%d,%d)\n",
+		    p->v.x, p->v.y);
 		killpoint(p);
+	}
 }
+
+static int done_anything;
 
 static void
 fix_edges(point *a0, point *b0)
 {
 	point *a1 = a0->next, *b1 = b0->next;
 
-	if (vec_inline(a0->v, b0->v, a1->v) ||
-	    vec_inline(a0->v, b1->v, a1->v) ||
-	    vec_inline(b0->v, a0->v, b1->v) ||
-	    vec_inline(b0->v, a1->v, b1->v)) {
-		a0->next = b1; b1->prev = a0;
-		fix_identical(a0);
-		fix_collinear(b1);
-		b0->next = a1; a1->prev = b0;
-		fix_identical(b0);
-		fix_collinear(a1);
+	assert(a1->prev == a0); assert(b1->prev == b0);
+	assert(a0 != a1); assert(a0 != b0);
+	assert(a1 != b1); assert(b0 != b1);
+	if (vec_bearing(vec_sub(a0->v, a1->v)) ==
+	    vec_bearing(vec_sub(b1->v, b0->v)) &&
+	    (vec_inline4(a0->v, b1->v, a1->v, b0->v) ||
+	     vec_inline4(a0->v, b1->v, b0->v, a1->v) ||
+	     vec_inline4(b1->v, a0->v, b0->v, a1->v) ||
+	     vec_inline4(b1->v, a0->v, a1->v, b0->v) ||
+	     vec_eqp(a0->v, b1->v) || vec_eqp(a1->v, b0->v))) {
+		fprintf(stderr,
+		    "linking (%d,%d)-(%d,%d)(%d) with (%d,%d)-(%d,%d)(%d)\n",
+		    a0->v.x, a0->v.y, a1->v.x, a1->v.y, vec_bearing(vec_sub(a0->v, a1->v)),
+		    b0->v.x, b0->v.y, b1->v.x, b1->v.y, vec_bearing(vec_sub(b1->v, b0->v)));
+		if (a0 == b1)
+			killpoint(a0);
+		else {
+			a0->next = b1; b1->prev = a0;
+			fix_identical(a0);
+			fix_collinear(b1);
+		}
+		if (b0 == a1)
+			killpoint(b0);
+		else {
+			b0->next = a1; a1->prev = b0;
+			fix_identical(b0);
+			fix_collinear(a1);
+		}
+		done_anything = 1;
 	}
 }
 
@@ -347,11 +382,13 @@ clean_path()
 {
 	int i, j;
 
-	for (i = 0; i < nextpoint; i++)
-		if (points[i].next)
-			for (j = i; j < nextpoint; j++)
+	do {
+		done_anything = 0;
+		for (i = 0; i < nextpoint; i++)
+			for (j = i+1; points[i].next && j < nextpoint; j++)
 				if (points[j].next)
 					fix_edges(&points[i], &points[j]);
+	} while (done_anything);
 }
 
 static void 
@@ -534,6 +571,6 @@ dochar(char data[YSIZE])
 /*			printf("grestore\n"); */
 		}
 	}
-/*	clean_path(); */
+	clean_path();
 	emit_path();
 }
