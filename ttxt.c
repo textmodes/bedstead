@@ -375,7 +375,7 @@ emit_path()
 			printf(" closepath\n");
 		}
 	}
-	printf("fill\n");
+	printf("stroke\n");
 }
 		
 static void
@@ -400,19 +400,35 @@ whitepixel(int x, int y, int bl, int br, int tr, int tl)
 	x *= 4; y *= 4;
 
 	if (bl) {
-		moveto(x, y); lineto(x, y+1); lineto(x+1, y);
+		moveto(x, y);
+		if (tl) { lineto(x, y+2); lineto(x+1, y+2); }
+		else lineto(x, y+3);
+		if (br) { lineto(x+2, y+1); lineto(x+2, y); }
+		else lineto(x+3, y);
 		closepath();
 	}
 	if (tl) {
-		moveto(x, y+4); lineto(x+1, y+4); lineto(x, y+3);
+		moveto(x, y+4);
+		if (tr) { lineto(x+2, y+4); lineto(x+2, y+3); }
+		else lineto(x+3, y+4);
+		if (bl) { lineto(x+1, y+2); lineto(x, y+2); }
+		else lineto(x, y+1);
 		closepath();
 	}
 	if (tr) {
-		moveto(x+4, y+4); lineto(x+4, y+3); lineto(x+3, y+4);
+		moveto(x+4, y+4);
+		if (br) { lineto(x+4, y+2); lineto(x+3, y+2); }
+		else lineto(x+4, y+1);
+		if (tl) { lineto(x+2, y+3); lineto(x+2, y+4); }
+		else lineto(x+1, y+4);
 		closepath();
 	}
 	if (br) {
-		moveto(x+4, y); lineto(x+3, y); lineto(x+4, y+1);
+		moveto(x+4, y);
+		if (bl) { lineto(x+2, y); lineto(x+2, y+1); }
+		else lineto(x+1, y);
+		if (tr) { lineto(x+3, y+2); lineto(x+4, y+2); }
+		else lineto(x+4, y+3);
 		closepath();
 	}
 }
