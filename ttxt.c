@@ -135,7 +135,6 @@ main(int argc, char **argv)
 {
 	int i;
 
-/* 	doprologue(); */
 	for (i = 0; i < 105; i++) {
 		printf("gsave %d %d translate\n",
 		       i % 16 * XSIZE, (6 - i / 16) * YSIZE);
@@ -145,61 +144,6 @@ main(int argc, char **argv)
 	}
 	printf("showpage\n");
 }
-
-/*
-void
-doprologue(void)
-{
-
-	printf("%s",
-"%!
-
-/blackpixel {
-    newpath
-    % Octagonal centre bit -- always black.
-    0 0.25 moveto
-    0 0.75 lineto
-    0.25 1 lineto
-    0.75 1 lineto
-    1 0.75 lineto
-    1 0.25 lineto
-    0.75 0 lineto
-    0.25 0 lineto
-    closepath fill
-
-    % fill in appropriate corners
-    gsave
-    { %forall
-	{ %if
-	    0 0 moveto
-	    0 0.25 lineto
-	    0.25 0 lineto
-	    closepath fill
-	} if
-	1 0 translate 90 rotate
-    } forall
-    grestore
-} bind def
-
-/whitepixel {
-    gsave
-    { %forall
-	{ %if
-	    0 0 moveto
-	    0 0.75 lineto
-	    0.75 0 lineto
-	    closepath fill
-	} if
-	1 0 translate 90 rotate
-    } forall
-    grestore
-} bind def
-
-4 4 scale
-1 1 translate
-");
-}
-*/
 
 typedef struct vec {
 	signed char x, y;
@@ -279,17 +223,6 @@ vec_sub(vec v1, vec v2)
 }
 
 static int
-vec_parallelp(vec v1, vec v2)
-{
-	/* Simplification: assume all vectors are at multiples of 45 deg */
-
-	return v1.x == 0 && v2.x == 0 ||
-	    v1.y == 0 && v2.y == 0 ||
-	    v1.x == v1.y && v2.x == v2.y ||
-	    v1.x == -v1.y && v2.x == -v2.y;
-}
-
-static int
 vec_bearing(vec v)
 {
 
@@ -307,11 +240,8 @@ vec_bearing(vec v)
 static void
 fix_identical(point *p)
 {
-	if (vec_eqp(p->next->v, p->v)) {
-		fprintf(stderr, "identical points at (%d,%d)\n",
-		    p->v.x, p->v.y);
+	if (vec_eqp(p->next->v, p->v))
 		killpoint(p);
-	}
 }
 
 static int
@@ -331,11 +261,8 @@ vec_inline4(vec a, vec b, vec c, vec d)
 static void
 fix_collinear(point *p)
 {
-	if (vec_inline3(p->prev->v, p->v, p->next->v)) {
-		fprintf(stderr, "collinear point at (%d,%d)\n",
-		    p->v.x, p->v.y);
+	if (vec_inline3(p->prev->v, p->v, p->next->v))
 		killpoint(p);
-	}
 }
 
 static int done_anything;
@@ -355,10 +282,6 @@ fix_edges(point *a0, point *b0)
 	     vec_inline4(b1->v, a0->v, b0->v, a1->v) ||
 	     vec_inline4(b1->v, a0->v, a1->v, b0->v) ||
 	     vec_eqp(a0->v, b1->v) || vec_eqp(a1->v, b0->v))) {
-		fprintf(stderr,
-		    "linking (%d,%d)-(%d,%d)(%d) with (%d,%d)-(%d,%d)(%d)\n",
-		    a0->v.x, a0->v.y, a1->v.x, a1->v.y, vec_bearing(vec_sub(a0->v, a1->v)),
-		    b0->v.x, b0->v.y, b1->v.x, b1->v.y, vec_bearing(vec_sub(b1->v, b0->v)));
 		if (a0 == b1)
 			killpoint(a0);
 		else {
@@ -479,9 +402,6 @@ dochar(char data[YSIZE])
 	clearpath();
 	for (x = 0; x < XSIZE; x++) {
 		for (y = 0; y < YSIZE; y++) {
-/*
-			printf("gsave %d %d translate\n", x, YSIZE - y - 1);
-*/
 			if (getpix(data, x, y)) {
 				/* Assume filled in */
 				corner[x][y].tl = 1;
@@ -524,13 +444,6 @@ dochar(char data[YSIZE])
 				    getpix(data, x+1, y+1) == 1 ||
 				    getpix(data, x, y+1) == 1)
 					corner[x][y].br = 1;
-/*
-				printf("[ %s %s %s %s ] blackpixel\n",
-				       corner[x][y].bl ? "true" : "false",
-				       corner[x][y].br ? "true" : "false",
-				       corner[x][y].tr ? "true" : "false",
-				       corner[x][y].tl ? "true" : "false");
-*/
 				blackpixel(x, YSIZE - y - 1,
 				    corner[x][y].bl, corner[x][y].br,
 				    corner[x][y].tr, corner[x][y].tl);
@@ -560,15 +473,7 @@ dochar(char data[YSIZE])
 				whitepixel(x, YSIZE - y - 1,
 				    corner[x][y].bl, corner[x][y].br,
 				    corner[x][y].tr, corner[x][y].tl);
-/*
-				printf("[ %s %s %s %s ] whitepixel\n",
-				       corner[x][y].bl ? "true" : "false",
-				       corner[x][y].br ? "true" : "false",
-				       corner[x][y].tr ? "true" : "false",
-				       corner[x][y].tl ? "true" : "false");
-*/
 			}
-/*			printf("grestore\n"); */
 		}
 	}
 	clean_path();
