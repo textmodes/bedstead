@@ -134,16 +134,18 @@ main(int argc, char **argv)
 {
 	int i;
 
-	doprologue();
+/* 	doprologue(); */
 	for (i = 0; i < 105; i++) {
 		printf("gsave %d %d translate\n",
 		       i % 16 * XSIZE, (6 - i / 16) * YSIZE);
+		printf("0.25 0.25 scale\n");
 		dochar(&data[i][0]);
 		printf("grestore\n");
 	}
 	printf("showpage\n");
 }
 
+/*
 void
 doprologue(void)
 {
@@ -196,6 +198,224 @@ doprologue(void)
 1 1 translate
 ");
 }
+*/
+
+typedef struct vec {
+	unsigned char x, y;
+} vec;
+
+typedef struct point {
+	struct point *next, *prev;
+	struct vec v;
+} point;
+
+#define MAXPOINTS (XSIZE * YSIZE * 20)
+
+static point points[MAXPOINTS];
+
+static int nextpoint;
+
+static void
+clearpath()
+{
+
+	nextpoint = 0;
+}
+
+static void
+moveto(unsigned x, unsigned y)
+{
+	struct point *p = &points[nextpoint++];
+
+	p->v.x = x; p->v.y = y;
+	p->next = p->prev = NULL;
+}
+
+static void
+lineto(unsigned x, unsigned y)
+{
+	struct point *p = &points[nextpoint++];
+
+	p->v.x = x; p->v.y = y;
+	p->next = NULL;
+	p->prev = p - 1;
+	p->prev->next = p;
+}
+
+static void
+closepath()
+{
+	struct point *p = &points[nextpoint - 1];
+
+	while (p->prev) p--;
+	p->prev = points + nextpoint - 1;
+	points[nextpoint - 1].next = p;
+}
+
+static void
+killpoint(point *p)
+{
+
+	p->prev->next = p->next;
+	p->next->prev = p->prev;
+	p->next = p->prev = NULL;
+}
+
+static vec const zero = { 0, 0 };
+
+static int
+vec_eqp(vec v1, vec v2)
+{
+	return v1.x == v2.x && v1.y == v2.y;
+}
+
+static vec
+vec_sub(vec v1, vec v2)
+{
+	vec ret;
+	ret.x = v1.x - v2.x; ret.y = v1.y - v2.y;
+	return ret;
+}
+
+static int
+vec_parallelp(vec v1, vec v2)
+{
+	/* Simplification: assume all vectors are at multiples of 45 deg */
+
+	return v1.x == 0 && v2.x == 0 ||
+	    v1.y == 0 && v2.y == 0 ||
+	    v1.x == v1.y && v2.x == v2.y ||
+	    v1.x == -v1.y && v2.x == -v2.y;
+}
+
+static int
+vec_bearing(vec v)
+{
+
+	if (v.x == 0 && v.y > 0) return 0;
+	if (v.x == v.y && v.x > 0) return 1;
+	if (v.x > 0 && v.y == 0) return 2;
+	if (v.x == -v.y && v.x > 0) return 3;
+	if (v.x == 0) return 4;
+	if (v.x == v.y) return 5;
+	if (v.y == 0) return 6;
+	if (v.x == -v.y) return 7;
+	return -1;
+}
+
+static void
+fix_identical(point *p)
+{
+	if (vec_eqp (p->next->v, p->v))
+		killpoint(p);
+}
+
+static int
+vec_inline(vec a, vec b, vec c)
+{
+	return vec_eqp(a, b) || vec_eqp(b, c) ||
+	    vec_bearing(vec_sub(b, a)) == vec_bearing(vec_sub(c, b));
+}
+
+static void
+fix_collinear(point *p)
+{
+	if (vec_inline(p->prev->v, p->v, p->next->v))
+		killpoint(p);
+}
+
+static void
+fix_edges(point *a0, point *b0)
+{
+	point *a1 = a0->next, *b1 = b0->next;
+
+	if (vec_inline(a0->v, b0->v, a1->v) ||
+	    vec_inline(a0->v, b1->v, a1->v) ||
+	    vec_inline(b0->v, a0->v, b1->v) ||
+	    vec_inline(b0->v, a1->v, b1->v)) {
+		a0->next = b1; b1->prev = a0;
+		fix_identical(a0);
+		fix_collinear(b1);
+		b0->next = a1; a1->prev = b0;
+		fix_identical(b0);
+		fix_collinear(a1);
+	}
+}
+
+static void
+clean_path()
+{
+	int i, j;
+
+	for (i = 0; i < nextpoint; i++)
+		if (points[i].next)
+			for (j = i; j < nextpoint; j++)
+				if (points[j].next)
+					fix_edges(&points[i], &points[j]);
+}
+
+static void 
+emit_path()
+{
+	int i;
+	point *p, *p1;
+
+	printf("newpath\n");
+	for (i = 0; i < nextpoint; i++) {
+		p = &points[i];
+		if (p->next) {
+			while (p->next) {
+				printf("  %d %d %s %% %d\n", p->v.x, p->v.y,
+				    p == &points[i] ? "moveto" : "lineto",
+					p - points);
+				p1 = p->next;
+				p->prev = p->next = NULL;
+				p = p1;
+			}
+			printf(" closepath\n");
+		}
+	}
+	printf("fill\n");
+}
+		
+static void
+blackpixel(int x, int y, int bl, int br, int tr, int tl)
+{
+	x *= 4; y *= 4;
+
+	if (bl)	moveto(x, y);
+	else { moveto(x+1, y); lineto(x, y+1); }
+	if (tl) lineto(x, y+4);
+	else { lineto(x, y+3); lineto(x+1, y+4); }
+	if (tr) lineto(x+4, y+4);
+	else { lineto(x+3, y+4); lineto(x+4, y+3); }
+	if (br) lineto(x+4, y);
+	else { lineto(x+4, y+1); lineto(x+3, y); }
+	closepath();
+}
+
+static void
+whitepixel(int x, int y, int bl, int br, int tr, int tl)
+{
+	x *= 4; y *= 4;
+
+	if (bl) {
+		moveto(x, y); lineto(x, y+1); lineto(x+1, y);
+		closepath();
+	}
+	if (tl) {
+		moveto(x, y+4); lineto(x+1, y+4); lineto(x, y+3);
+		closepath();
+	}
+	if (tr) {
+		moveto(x+4, y+4); lineto(x+4, y+3); lineto(x+3, y+4);
+		closepath();
+	}
+	if (br) {
+		moveto(x+4, y); lineto(x+3, y); lineto(x+4, y+1);
+		closepath();
+	}
+}
 
 void
 dochar(char data[YSIZE])
@@ -203,9 +423,12 @@ dochar(char data[YSIZE])
 	struct corner corner[XSIZE][YSIZE] = { };
 	int x, y;
 
+	clearpath();
 	for (x = 0; x < XSIZE; x++) {
 		for (y = 0; y < YSIZE; y++) {
+/*
 			printf("gsave %d %d translate\n", x, YSIZE - y - 1);
+*/
 			if (getpix(data, x, y)) {
 				/* Assume filled in */
 				corner[x][y].tl = 1;
@@ -248,11 +471,16 @@ dochar(char data[YSIZE])
 				    getpix(data, x+1, y+1) == 1 ||
 				    getpix(data, x, y+1) == 1)
 					corner[x][y].br = 1;
+/*
 				printf("[ %s %s %s %s ] blackpixel\n",
 				       corner[x][y].bl ? "true" : "false",
 				       corner[x][y].br ? "true" : "false",
 				       corner[x][y].tr ? "true" : "false",
 				       corner[x][y].tl ? "true" : "false");
+*/
+				blackpixel(x, YSIZE - y - 1,
+				    corner[x][y].bl, corner[x][y].br,
+				    corner[x][y].tr, corner[x][y].tl);
 			} else {
 				/* Assume clear */
 				corner[x][y].tl = 0;
@@ -276,13 +504,20 @@ dochar(char data[YSIZE])
 				    getpix(data, x, y+1) == 1 &&
 				    getpix(data, x+1, y+1) == 0)
 					corner[x][y].br = 1;
+				whitepixel(x, YSIZE - y - 1,
+				    corner[x][y].bl, corner[x][y].br,
+				    corner[x][y].tr, corner[x][y].tl);
+/*
 				printf("[ %s %s %s %s ] whitepixel\n",
 				       corner[x][y].bl ? "true" : "false",
 				       corner[x][y].br ? "true" : "false",
 				       corner[x][y].tr ? "true" : "false",
 				       corner[x][y].tl ? "true" : "false");
+*/
 			}
-			printf("grestore\n");
+/*			printf("grestore\n"); */
 		}
 	}
+/*	clean_path(); */
+	emit_path();
 }
