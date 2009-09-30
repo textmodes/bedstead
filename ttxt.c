@@ -143,6 +143,7 @@ main(int argc, char **argv)
 		printf("grestore\n");
 	}
 	printf("showpage\n");
+	return 0;
 }
 
 typedef struct vec {
@@ -325,9 +326,8 @@ emit_path()
 		p = &points[i];
 		if (p->next) {
 			while (p->next) {
-				printf("  %d %d %s %% %d\n", p->v.x, p->v.y,
-				    p == &points[i] ? "moveto" : "lineto",
-					p - points);
+				printf("  %d %d %s\n", p->v.x, p->v.y,
+				    p == &points[i] ? "moveto" : "lineto");
 				p1 = p->next;
 				p->prev = p->next = NULL;
 				p = p1;
