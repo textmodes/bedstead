@@ -216,13 +216,12 @@ main(int argc, char **argv)
 	printf("FitToEm: 1\n");
 	printf("BeginChars: %d %d\n", nglyphs+32, nglyphs);
 	for (i = 0; i < nglyphs; i++) {
-		printf("StartChar: %s\n", glyphs[i].name);
+		printf("\nStartChar: %s\n", glyphs[i].name);
 		printf("Encoding: %d %d %d\n",
 		    i+32, glyphs[i].unicode, i);
 		printf("Width: 600\n");
-		printf("Flags:\n");
+		printf("Flags: W\n");
 		printf("LayerCount: 2\n");
-		printf("Fore\n");
 		dochar(glyphs[i].data);
 		printf("EndChar\n");
 	}
@@ -406,13 +405,14 @@ clean_path()
 static void 
 emit_path()
 {
-	int i;
+	int i, started = 0;
 	point *p, *p1;
 
-	printf("SplineSet\n");
 	for (i = 0; i < nextpoint; i++) {
 		p = &points[i];
 		if (p->next) {
+			if (!started) printf("Fore\nSplineSet\n");
+			started = 1;
 			do {
 				printf(" %d %d %s 1\n",
 				    p->v.x*25, p->v.y*25 - 300,
@@ -423,7 +423,7 @@ emit_path()
 			} while (p);
 		}
 	}
-	printf("EndSplineSet\n");
+	if (started) printf("EndSplineSet\n");
 }
 		
 static void
