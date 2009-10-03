@@ -214,6 +214,10 @@ main(int argc, char **argv)
 	printf("DisplaySize: -24\n");
 	printf("AntiAlias: 1\n");
 	printf("FitToEm: 1\n");
+	printf("BeginPrivate: 2\n");
+	printf(" StdHW 5 [100]\n");
+	printf(" StdVW 5 [100]\n");
+	printf("EndPrivate\n");
 	printf("BeginChars: %d %d\n", nglyphs+32, nglyphs);
 	for (i = 0; i < nglyphs; i++) {
 		printf("\nStartChar: %s\n", glyphs[i].name);
