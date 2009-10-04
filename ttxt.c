@@ -402,7 +402,11 @@ int
 main(int argc, char **argv)
 {
 	int i, nglyphs = sizeof(glyphs) / sizeof(glyphs[0]);
+	int extraglyphs = 0;
 
+	for (i = 0; i < nglyphs; i++)
+		if (glyphs[i].unicode == -1)
+			extraglyphs++;
 	printf("SplineFontDB: 3.0\n");
 	printf("FontName: TTXT\n");
 	printf("FullName: TTXT\n");
@@ -418,7 +422,7 @@ main(int argc, char **argv)
 	printf("LayerCount: 2\n");
 	printf("Layer: 0 0 \"Back\" 1\n");
 	printf("Layer: 1 0 \"Fore\" 0\n");
-/*	printf("Encoding: UnicodeBmp\n"); */
+	printf("Encoding: UnicodeBmp\n");
 	printf("NameList: Adobe Glyph List\n");
 	printf("DisplaySize: -24\n");
 	printf("AntiAlias: 1\n");
@@ -427,11 +431,13 @@ main(int argc, char **argv)
 	printf(" StdHW 5 [100]\n");
 	printf(" StdVW 5 [100]\n");
 	printf("EndPrivate\n");
-	printf("BeginChars: %d %d\n", nglyphs+32, nglyphs);
+	printf("BeginChars: %d %d\n", 65536 + extraglyphs, nglyphs);
+	extraglyphs = 0;
 	for (i = 0; i < nglyphs; i++) {
 		printf("\nStartChar: %s\n", glyphs[i].name);
 		printf("Encoding: %d %d %d\n",
-		    i+32, glyphs[i].unicode, i);
+		    glyphs[i].unicode != -1 ? glyphs[i].unicode :
+		    65536 + extraglyphs++, glyphs[i].unicode, i);
 		printf("Width: 600\n");
 		printf("Flags: W\n");
 		printf("LayerCount: 2\n");
