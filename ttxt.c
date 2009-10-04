@@ -1,3 +1,74 @@
+/*
+ * This is a program to construct an outline font from a bitmap.  It's
+ * based on the character-rounding algorithm of the Mullard SAA5050
+ * series of Teletext character generators, and thus works best on
+ * character shapes in the same style of those of the SAA5050.  This
+ * file includes all of the glyphs from the SAA5050, SAA5051, SAA5052,
+ * SAA5053, SAA5054, SAA5055, SAA5056, and SAA5057.  The output is a
+ * Spline Font Database file suitable for feeding to Fontforge.
+ *
+ * The character-smoothing algorithm of the SAA5050 and friends is
+ * a fairly simple means of expanding a 5x9 pixel character to 10x18
+ * pixels for use on an interlaced display.  All it does is to detect
+ * 2x2 clumps of pixels containing a diagonal line and add a couple of
+ * subpixels to it, like this:
+ *
+ * . #  -> . . # # -> . . # # or # . -> # # . . -> # # . .
+ * # .     . . # #    . # # #    . #    # # . .    # # # .
+ *         # # . .    # # # .           . . # #    . # # #
+ *         # # . .    # # . .           . . # #    . . # #
+ *
+ * This is applied to every occurrence of these patterns, even when
+ * they overlap, and the result is that thin diagonal lines are
+ * smoothed out while other features mostly remain the same.
+ *
+ * One way of extending this towards continuity would be to repeatedly
+ * double the resolution and add more pixels to diagonals each time,
+ * but this ends up with the diagonals being much too heavy.  Instead,
+ * in places where the SAA5050 would add pixels, this program adds a
+ * largeish triangle to each unfilled pixel, and remove a small
+ * triangle from each filled one, something like this:
+ *
+ * . #  -> . . # # -> . . / # or # . -> # # . . -> # \ . .
+ * # .     . . # #    . / # /    . #    # # . .    \ # \ .
+ *         # # . .    / # / .           . . # #    . \ # \
+ *         # # . .    # / . .           . . # #    . . \ #
+ * 
+ * The position of the lines is such that on a long diagonal line, the
+ * amount of filled space is the same as in the rounded bitmap.  There
+ * are a few additional complications, in that the trimming of filled
+ * pixels can leave odd gaps where a diagonal stem joins another one,
+ * so the code detects this and doesn't trim in these cases:
+ *
+ * . # # -> . . # # # # -> . . / # # # -> . . / # # #
+ * # . .    . . # # # #    . / # / # #    . / # # # #
+ *          # # . . . .    / # / . . .    / # / . . .
+ *          # # . . . .    # / . . . .    # / . . . .
+ *
+ * That is the interesting part of the program, and is in the dochar()
+ * function.  Most of the rest is just dull geometry to join all the
+ * bits together into a sensible outline.  Much of the code is wildly
+ * inefficient -- O(n^2) algorithms aren't much of a problem when you
+ * have at most a few thousand points to deal with.
+ *
+ * A rather nice feature of the outlines produced by this program is
+ * that when rasterised at precisely 10 or 20 pixels high, they
+ * produce the input and output respectively of the character-rounding
+ * process.  While there are obious additional smoothings that could
+ * be applied, doing so would probably lose this nice property.
+ *
+ * The glyph bitmaps included below include all the ones from the various
+ * members of the SAA5050 family that I know about.  They are as shown
+ * in the datasheet, and the English ones have been checked against a
+ * real SAA5050.  Occasionally, different languages have different
+ * glyphs for the same character -- these are represented as
+ * alternates, with the default being the glyph that looks best.
+ *
+ * There are some extra glyphs included as well, some derived from
+ * standard ones and some made from whole cloth.  They are built on
+ * the same 5x9 matrix as the originals, and processed in the same way.
+ */
+
 #include <assert.h>
 #include <stdio.h>
 
