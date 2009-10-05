@@ -96,7 +96,11 @@ struct glyph {
 	int unicode;
 	char const *name;
 } glyphs[] = {
- /* US ASCII (SAA5055) character set from SAA5050 datasheet */
+ /*
+  * The first batch of glyphs comes from the code tables at the end of
+  * the Mullard SAA5050 series datasheet, dated July 1982.
+  */
+ /* US ASCII (SAA5055) character set */
  {{000,000,000,000,000,000,000,000,000,000}, 0x0020, "space" },
  {{004,004,004,004,004,000,004,000,000,000}, 0x0021, "exclam" },
  {{012,012,012,000,000,000,000,000,000,000}, 0x0022, "quotedbl" },
@@ -346,7 +350,13 @@ struct glyph {
  {{000,000,025,025,025,025,037,001,000,000}, 0x0449, "afii10091" }, /* shcha */
  {{000,000,021,021,021,017,001,000,000,000}, 0x0447, "afii10089" }, /* che */
 
- /* ASV-CODAR glyphs from an EBU document */
+ /*
+  * The second batch of glyphs was found in the appendices to
+  * "Displayable Character Sets for Broadcast Teletext", EBU Tech
+  * 3232-E, second edition, June 1982, as examples of rendering
+  * characters in a 5x9 matrix
+  */
+ /* ASV-CODAR glyphs from Appendix 3 */
  {{001,001,001,001,001,001,000,000,000,000}, 0x0627, "asvcodar-alef" },
  {{000,000,000,001,001,037,000,004,000,000}, 0x0628, "asvcodar-beh" },
  {{000,012,000,001,001,037,000,000,000,000}, 0x062a, "asvcodar-teh" },
@@ -415,7 +425,7 @@ struct glyph {
  {{000,000,000,001,001,037,000,012,004,000}, -1, "asvcodar-63" },
  {{005,012,024,016,001,037,000,000,000,000}, -1, "asvcodar-64" },
 
- /* Arabic-Indic digits from the same EBU document */
+ /* Arabic-Indic digits from Appendix 9 */
  {{000,000,000,004,000,000,000,000,000,000}, 0x0660, "afii57392" }, /* zero */
  {{000,004,004,004,004,004,000,000,000,000}, 0x0661, "afii57393" }, /* one */
  {{000,012,014,010,010,010,000,000,000,000}, 0x0662, "afii57394" }, /* two */
@@ -426,7 +436,11 @@ struct glyph {
  {{000,021,021,012,012,004,000,000,000,000}, 0x0667, "afii57399" }, /* seven */
  {{000,004,012,012,021,021,000,000,000,000}, 0x0668, "afii57400" }, /* eight */
  {{000,014,022,016,002,002,000,000,000,000}, 0x0669, "afii57401" }, /* nine */
+ /* Appendix 9 also contains a Hebrew alphabet, but we've already got one. */
 
+ /*
+  * The third batch of glyphs were specially designed for this font.
+  */
  /* Additional glyphs by bjh21 */
  {{010,004,002,000,000,000,000,000,000,000}, 0x0060, "grave" },
  {{004,004,004,004,004,004,004,000,000,000}, 0x007c, "bar" },
