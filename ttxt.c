@@ -549,12 +549,13 @@ main(int argc, char **argv)
 	    "['smcp' ('latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"c2sc: upper-case to small caps\" {\"c2sc\"} "
 	    "['c2sc' ('latn' <'dflt'>)]\n");
-	printf("Lookup: 2 0 0 \"fina: Arabic tails\" {\"tails\"} "
-	    "['fina' ('arab' <'dflt'>)]\n");
+	printf("Lookup: 2 0 0 \"fina/isol: Arabic tails\" {\"tails\"} "
+	    "['fina' ('arab' <'dflt'>) 'isol' ('arab' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"fina: Arabic final form\" {\"fina\"} "
 	    "['fina' ('arab' <'dflt'>)]\n");
-	printf("Lookup: 1 0 0 \"isol: Arabic isolated form\" {\"isol\"} "
-	    "['isol' ('arab' <'dflt'>)]\n");
+	printf("Lookup: 1 0 0 \"fina/isol: Arabic final/isolated form\" "
+	    "{\"finaisol\"} "
+	    "['fina' ('arab' <'dflt'>) 'isol' ('arab' <'dflt'>)]\n");
 	printf("BeginChars: %d %d\n", 65536 + extraglyphs, nglyphs);
 	extraglyphs = 0;
 	for (i = 0; i < nglyphs; i++) {
@@ -584,11 +585,11 @@ main(int argc, char **argv)
 		if ((glyphs[i].flags & A3))
 			printf("MultipleSubs2: \"tails\" uni%04X tail3\n",
 			    (unsigned)glyphs[i].unicode);
-		if ((glyphs[i].flags & (AF|AFI)))
+		if ((glyphs[i].flags & (AF)))
 			printf("Substitution2: \"fina\" uni%04X.fina\n",
 			    (unsigned)glyphs[i].unicode);
 		if ((glyphs[i].flags & AFI))
-			printf("Substitution2: \"isol\" uni%04X.fina\n",
+			printf("Substitution2: \"finaisol\" uni%04X.fina\n",
 			    (unsigned)glyphs[i].unicode);
 		dochar(glyphs[i].data);
 		printf("EndChar\n");
