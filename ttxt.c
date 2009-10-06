@@ -545,6 +545,8 @@ main(int argc, char **argv)
 	printf(" StdHW 5 [100]\n");
 	printf(" StdVW 5 [100]\n");
 	printf("EndPrivate\n");
+	/* Force monochrome at 10 and 20 pixels, and greyscale elsewhere. */
+	printf("GaspTable: 5 9 2 10 0 19 3 20 0 65535 3\n");
 	printf("Lookup: 1 0 0 \"smcp: lower-case to small caps\" {\"smcp\"} "
 	    "['smcp' ('latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"c2sc: upper-case to small caps\" {\"c2sc\"} "
