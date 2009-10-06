@@ -532,7 +532,7 @@ main(int argc, char **argv)
 	printf("Lookup: 1 0 0 \"smcp: lower-case to small caps\" {\"smcp\"} "
 	    "['smcp' ('latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"c2sc: upper-case to small caps\" {\"c2sc\"} "
-	    "['smcp' ('latn' <'dflt'>)]\n");
+	    "['c2sc' ('latn' <'dflt'>)]\n");
 	printf("BeginChars: %d %d\n", 65536 + extraglyphs, nglyphs);
 	extraglyphs = 0;
 	for (i = 0; i < nglyphs; i++) {
