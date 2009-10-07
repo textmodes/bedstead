@@ -1,3 +1,4 @@
+
 /*
  * This is a program to construct an outline font from a bitmap.  It's
  * based on the character-rounding algorithm of the Mullard SAA5050
@@ -100,13 +101,14 @@ struct glyph {
 	char data[YSIZE];
 	int unicode;
 	char const *name;
-	unsigned char flags;
-#define SC   1 /* Character has a small-caps variant. */
-#define A1   2 /* Arabic character with upwards tail. */
-#define A2   4 /* Arabic character with downwards tail. */
-#define A3   8 /* Arabic character with loopy tail. */
-#define AF  16 /* Arabic character with a dedicated final form. */
-#define AFI 32 /* Arabic character with a final/isolated from. */
+	unsigned int flags;
+#define SC  0x01 /* Character has a small-caps variant. */
+/* Arabic classes */
+#define Amask 0xf0
+#define A1  0x10 /* Dual-joining Arabic character with upwards tail. */
+#define A2  0x20 /* Dual-joining Arabic character with downwards tail. */
+#define A3  0x30 /* Dual-joining Arabic character with loopy tail. */
+#define AFI 0x40 /* Dual-joining Arabic character with special X_n/X_r form. */
 } glyphs[] = {
  /*
   * The first batch of glyphs comes from the code tables at the end of
@@ -375,12 +377,12 @@ struct glyph {
  {{000,000,000,001,001,077,000,004,000}, 0x0628, 0, A1 }, /* beh */
  {{000,012,000,001,001,077,000,000,000}, 0x062a }, /* teh */
  {{004,012,000,001,001,077,000,000,000}, 0x062b, 0, A1 }, /* theh */
- {{000,000,010,024,002,077,000,004,000}, 0x062c, 0, A1 }, /* jeem */
+ {{000,000,010,024,002,077,000,004,000}, 0x062c, 0, A2 }, /* jeem */
  {{000,000,010,024,002,077,000,000,000}, 0x062d, 0, A2 }, /* hah */
  {{004,000,010,024,002,077,000,000,000}, 0x062e, 0, A2 }, /* khah */
- {{000,004,002,001,001,017,000,000,000}, 0x062f, 0, A2 }, /* dal */
+ {{000,004,002,001,001,017,000,000,000}, 0x062f }, /* dal */
  {{001,004,002,001,001,017,000,000,000}, 0x0630 }, /* thal */
- {{000,000,000,001,001,001,002,004,010}, 0x0631 }, /* ra */
+ {{000,000,000,001,001,001,002,004,010}, 0x0631 }, /* reh */
  {{000,004,000,001,001,001,002,004,010}, 0x0632 }, /* zain */
  {{000,000,000,025,025,077,000,000,000}, 0x0633, 0, A3 }, /* seen */
  {{004,012,000,025,025,077,000,000,000}, 0x0634, 0, A3 }, /* sheen */
@@ -396,7 +398,7 @@ struct glyph {
  {{001,001,001,001,001,077,000,000,000}, 0x0644, 0, A1 }, /* lam */
  {{000,000,000,000,006,071,006,000,000}, 0x0645, 0, A2 }, /* meem */
  {{000,004,000,001,001,077,000,000,000}, 0x0646, 0, A1 }, /* noon */
- {{000,006,001,015,013,077,000,000,000}, 0x0647, 0, AF }, /* heh */
+ {{000,006,001,015,013,077,000,000,000}, 0x0647, 0, AFI }, /* heh */
  {{000,000,000,003,005,007,001,001,016}, 0x0648 }, /* waw */
  {{000,000,000,001,001,077,000,012,000}, 0x064a, 0, AFI }, /* yeh */
  {{000,000,006,010,010,006,010,000,000}, 0x0621 }, /* hamza */
@@ -553,8 +555,6 @@ main(int argc, char **argv)
 	    "['c2sc' ('latn' <'dflt'>)]\n");
 	printf("Lookup: 2 0 0 \"fina/isol: Arabic tails\" {\"tails\"} "
 	    "['fina' ('arab' <'dflt'>) 'isol' ('arab' <'dflt'>)]\n");
-	printf("Lookup: 1 0 0 \"fina: Arabic final form\" {\"fina\"} "
-	    "['fina' ('arab' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"fina/isol: Arabic final/isolated form\" "
 	    "{\"finaisol\"} "
 	    "['fina' ('arab' <'dflt'>) 'isol' ('arab' <'dflt'>)]\n");
@@ -578,21 +578,24 @@ main(int argc, char **argv)
 			        "c2sc" : "smcp",
 			    tolower((unsigned char)glyphs[i].name[0]),
 			    glyphs[i].name + 1);
-		if ((glyphs[i].flags & A1))
+		switch (glyphs[i].flags & Amask) {
+		case A1:
 			printf("MultipleSubs2: \"tails\" uni%04X tail1\n",
 			    (unsigned)glyphs[i].unicode);
-		if ((glyphs[i].flags & A2))
+			break;
+		case A2:
 			printf("MultipleSubs2: \"tails\" uni%04X tail2\n",
 			    (unsigned)glyphs[i].unicode);
-		if ((glyphs[i].flags & A3))
+			break;
+		case A3:
 			printf("MultipleSubs2: \"tails\" uni%04X tail3\n",
 			    (unsigned)glyphs[i].unicode);
-		if ((glyphs[i].flags & (AF)))
-			printf("Substitution2: \"fina\" uni%04X.fina\n",
-			    (unsigned)glyphs[i].unicode);
-		if ((glyphs[i].flags & AFI))
+			break;
+		case AFI:
 			printf("Substitution2: \"finaisol\" uni%04X.fina\n",
 			    (unsigned)glyphs[i].unicode);
+			break;
+		}
 		dochar(glyphs[i].data);
 		printf("EndChar\n");
 	}
