@@ -1,4 +1,32 @@
-
+/*
+ * Some of the character bitmaps below are likely to be subject to
+ * copyright owned by Mullard's corporate successors, who are likely
+ * to be NXP Semiconductors.  Copyright in the Arabic glyphs is
+ * probably owned by the European Broadcasting Union or one of its
+ * members.  Other than that, the file is covered by the following:
+ *
+ * Copyright (c) 2009 Ben Harris.
+ *
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation files
+ * (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 /*
  * This is a program to construct an outline font from a bitmap.  It's
  * based on the character-rounding algorithm of the Mullard SAA5050
@@ -85,17 +113,8 @@ struct corner {
 	int tl, tr, bl, br;
 };
 
-inline int
-getpix(char data[YSIZE], int x, int y) {
-
-	if (x < 0 || x >= XSIZE || y < 0 || y >= YSIZE)
-		return 0;
-	else
-		return (data[y] >> (XSIZE - x - 1)) & 1;
-}
-
 void doprologue(void);
-void dochar(char data[YSIZE]);
+void dochar(char data[YSIZE], unsigned flags);
 
 struct glyph {
 	char data[YSIZE];
@@ -104,11 +123,14 @@ struct glyph {
 	unsigned int flags;
 #define SC  0x01 /* Character has a small-caps variant. */
 /* Arabic classes */
+#define ARX 0x100 /* Arabic glyph joins to the right */
+#define ALX 0x200 /* Arabic glyph joins to the left */
+#define ADX 0x300 /* Arabic glyph joins on both sides */
 #define Amask 0xf0
-#define A1  0x10 /* Dual-joining Arabic character with upwards tail. */
-#define A2  0x20 /* Dual-joining Arabic character with downwards tail. */
-#define A3  0x30 /* Dual-joining Arabic character with loopy tail. */
-#define AFI 0x40 /* Dual-joining Arabic character with special X_n/X_r form. */
+#define A1  0x310 /* Dual-joining Arabic character with upwards tail. */
+#define A2  0x320 /* Dual-joining Arabic character with downwards tail. */
+#define A3  0x330 /* Dual-joining Arabic character with loopy tail. */
+#define AFI 0x340 /* Dual-joining Arabic character with special X_n/X_r form. */
 } glyphs[] = {
  /*
   * The first batch of glyphs comes from the code tables at the end of
@@ -368,39 +390,40 @@ struct glyph {
   * The second batch of glyphs was found in the appendices to
   * "Displayable Character Sets for Broadcast Teletext", EBU Tech
   * 3232-E, second edition, June 1982, as examples of rendering
-  * characters in a 5x9 matrix.  These versions have an extra pixel
-  * added on the left side of many glyphs to connect to the next
-  * letter.
+  * characters in a 5x9 matrix.
   */
  /* ASV-CODAR glyphs from Appendix 3 */
  {{001,001,001,001,001,001,000,000,000}, 0x0627 }, /* alef */
- {{000,000,000,001,001,077,000,004,000}, 0x0628, 0, A1 }, /* beh */
+ {{000,000,000,001,001,037,000,004,000}, 0x0628, 0, A1 }, /* beh */
  {{000,012,000,001,001,077,000,000,000}, 0x062a }, /* teh */
- {{004,012,000,001,001,077,000,000,000}, 0x062b, 0, A1 }, /* theh */
- {{000,000,010,024,002,077,000,004,000}, 0x062c, 0, A2 }, /* jeem */
- {{000,000,010,024,002,077,000,000,000}, 0x062d, 0, A2 }, /* hah */
- {{004,000,010,024,002,077,000,000,000}, 0x062e, 0, A2 }, /* khah */
+ {{004,012,000,001,001,037,000,000,000}, 0x062b, 0, A1 }, /* theh */
+ {{000,000,010,024,002,037,000,004,000}, 0x062c, 0, A2 }, /* jeem */
+ {{000,000,010,024,002,037,000,000,000}, 0x062d, 0, A2 }, /* hah */
+ {{004,000,010,024,002,037,000,000,000}, 0x062e, 0, A2 }, /* khah */
  {{000,004,002,001,001,017,000,000,000}, 0x062f }, /* dal */
  {{001,004,002,001,001,017,000,000,000}, 0x0630 }, /* thal */
  {{000,000,000,001,001,001,002,004,010}, 0x0631 }, /* reh */
  {{000,004,000,001,001,001,002,004,010}, 0x0632 }, /* zain */
- {{000,000,000,025,025,077,000,000,000}, 0x0633, 0, A3 }, /* seen */
- {{004,012,000,025,025,077,000,000,000}, 0x0634, 0, A3 }, /* sheen */
- {{000,000,000,007,011,077,000,000,000}, 0x0635, 0, A3 }, /* sad */
- {{000,004,000,007,011,077,000,000,000}, 0x0636, 0, A3 }, /* dad */
- {{010,010,010,017,011,077,000,000,000}, 0x0637 }, /* tah */
- {{010,012,010,017,011,077,000,000,000}, 0x0638 }, /* zah */
- {{000,000,006,010,010,077,000,000,000}, 0x0639, 0, A2 }, /* ain */
- {{004,000,006,010,010,077,000,000,000}, 0x063a, 0, A2 }, /* ghain */
- {{002,000,002,005,003,077,000,000,000}, 0x0641, 0, A1 }, /* feh */
- {{012,000,002,005,003,077,000,000,000}, 0x0642, 0, A1 }, /* qaf */
- {{001,002,004,016,001,077,000,000,000}, 0x0643, 0, A1 }, /* kaf */
- {{001,001,001,001,001,077,000,000,000}, 0x0644, 0, A1 }, /* lam */
- {{000,000,000,000,006,071,006,000,000}, 0x0645, 0, A2 }, /* meem */
- {{000,004,000,001,001,077,000,000,000}, 0x0646, 0, A1 }, /* noon */
- {{000,006,001,015,013,077,000,000,000}, 0x0647, 0, AFI }, /* heh */
+ {{000,000,000,025,025,037,000,000,000}, 0x0633, 0, A3 }, /* seen */
+ {{004,012,000,025,025,037,000,000,000}, 0x0634, 0, A3 }, /* sheen */
+ {{000,000,000,007,011,037,000,000,000}, 0x0635, 0, A3 }, /* sad */
+ {{000,004,000,007,011,037,000,000,000}, 0x0636, 0, A3 }, /* dad */
+ {{010,010,010,017,011,037,000,000,000}, 0x0637 }, /* tah */
+ {{010,010,010,017,011,037,000,000,000}, 0xfec4, "uni0637.medi", ALX },
+ {{010,012,010,017,011,037,000,000,000}, 0x0638 }, /* zah */
+ {{010,012,010,017,011,037,000,000,000}, 0xfec8, "uni0638.medi", ALX },
+ {{000,000,006,010,010,037,000,000,000}, 0x0639, 0, A2 }, /* ain */
+ {{004,000,006,010,010,037,000,000,000}, 0x063a, 0, A2 }, /* ghain */
+ {{002,000,002,005,003,037,000,000,000}, 0x0641, 0, A1 }, /* feh */
+ {{012,000,002,005,003,037,000,000,000}, 0x0642, 0, A1 }, /* qaf */
+ {{001,002,004,016,001,037,000,000,000}, 0x0643, 0, A1 }, /* kaf */
+ {{001,001,001,001,001,037,000,000,000}, 0x0644, 0, A1 }, /* lam */
+ {{000,000,000,000,006,031,006,000,000}, 0x0645, 0, A2 }, /* meem */
+ {{000,000,000,000,006,031,006,000,000}, 0xfee4, "uni0645.medi", A2|ARX },
+ {{000,004,000,001,001,037,000,000,000}, 0x0646, 0, A1 }, /* noon */
+ {{000,006,001,015,013,037,000,000,000}, 0x0647, 0, AFI }, /* heh */
  {{000,000,000,003,005,007,001,001,016}, 0x0648 }, /* waw */
- {{000,000,000,001,001,077,000,012,000}, 0x064a, 0, AFI }, /* yeh */
+ {{000,000,000,001,001,037,000,012,000}, 0x064a, 0, AFI }, /* yeh */
  {{000,000,006,010,010,006,010,000,000}, 0x0621 }, /* hamza */
  {{000,000,000,003,025,025,034,000,012}, 0xfef2, "uni064A.fina" }, /* yeh */
  {{000,000,000,003,025,025,034,000,000}, 0x0649 }, /* alef maksura */
@@ -410,36 +433,36 @@ struct glyph {
  {{015,011,015,001,001,001,000,000,000}, 0x0623 }, /* hamza on alef */
  {{001,001,001,001,015,011,014,000,000}, 0x0625 }, /* hamza under alef */
  {{017,010,001,001,001,001,001,000,000}, 0x0622 }, /* madda on alef */
- {{014,010,014,001,001,077,000,000,000}, -1, "asvcodar37", A1 },
+ {{014,010,014,001,001,037,000,000,000}, -1, "asvcodar37", A1 },
  {{014,010,014,000,003,005,024,022,036}, 0x0626 }, /* hamza on yeh */
  {{030,020,030,003,005,007,001,001,016}, 0x0624 }, /* hamza on waw */
 
  {{007,000,000,000,000,000,000,000,000}, 0xfe76, "uni0020064E.isol" },
- {{007,000,000,000,000,077,000,000,000}, 0xfe77, "uni0640064E.medi" },
+ {{007,000,000,000,000,037,000,000,000}, 0xfe77, "uni0640064E.medi", ADX },
  {{003,001,002,000,000,000,000,000,000}, 0xfe78, "uni0020064F.isol" },
- {{003,001,002,000,000,077,000,000,000}, 0xfe79, "uni0640064F.medi" },
+ {{003,001,002,000,000,037,000,000,000}, 0xfe79, "uni0640064F.medi", ADX },
  {{000,000,000,000,000,000,000,000,007}, 0xfe7a, "uni00200650.isol" },
- {{000,000,000,000,000,077,000,000,007}, 0xfe7b, "uni06400650.medi" },
+ {{000,000,000,000,000,037,000,000,007}, 0xfe7b, "uni06400650.medi", ADX },
  {{007,000,005,007,000,000,000,000,000}, -1, "asvcodar46" },
  {{003,001,002,000,005,007,000,000,000}, -1, "asvcodar47" },
  {{005,007,000,007,000,000,000,000,000}, -1, "asvcodar48" },
- {{005,007,000,007,000,077,000,000,000}, -1, "asvcodar49" },
- {{007,000,005,007,000,077,000,000,000}, -1, "asvcodar50" },
- {{005,007,000,000,000,077,000,000,000}, 0xfe7d, "uni06400651.medi" },
+ {{005,007,000,007,000,037,000,000,000}, -1, "asvcodar49", ADX },
+ {{007,000,005,007,000,037,000,000,000}, -1, "asvcodar50", ADX },
+ {{005,007,000,000,000,037,000,000,000}, 0xfe7d, "uni06400651.medi", ADX },
  {{005,007,000,000,000,000,000,000,000}, 0xfe7c, "uni00200651.isol" },
  {{002,005,002,000,000,000,000,000,000}, 0xfe7e, "uni00200652.isol" },
- {{002,005,002,000,000,077,000,000,000}, 0xfe7f, "uni06400652.medi" },
+ {{002,005,002,000,000,037,000,000,000}, 0xfe7f, "uni06400652.medi", ADX },
  {{016,016,000,000,000,000,000,000,000}, 0xfe70, "uni0020064B.isol" },
  {{033,011,022,000,000,000,000,000,000}, -1, "asvcodar56" },
  {{000,000,000,000,000,000,000,016,016}, 0xfe74, "uni0020064D.isol" },
- {{030,010,025,007,000,077,000,000,000}, -1, "asvcodar58" },
+ {{030,010,025,007,000,037,000,000,000}, -1, "asvcodar58", ADX },
  {{007,007,005,007,000,000,000,000,000}, -1, "asvcodar59" },
  {{033,011,022,000,005,007,000,000,000}, -1, "asvcodar60" },
  {{012,016,000,016,016,000,000,000,000}, -1, "asvcodar61" },
 
- {{014,010,002,005,003,077,000,000,000}, 0x06a4, 0, A1 }, /* veh */
- {{000,000,000,001,001,077,000,012,004}, 0x067e, 0, A1 }, /* peh */
- {{005,012,024,016,001,077,000,000,000}, 0x06af, 0, A1 }, /* gaf */
+ {{014,010,002,005,003,037,000,000,000}, 0x06a4, 0, A1 }, /* veh */
+ {{000,000,000,001,001,037,000,012,004}, 0x067e, 0, A1 }, /* peh */
+ {{005,012,024,016,001,037,000,000,000}, 0x06af, 0, A1 }, /* gaf */
 
  /* Arabic-Indic digits from Appendix 9 */
  {{000,000,000,004,000,000,000,000,000}, 0x0660 }, /* zero */
@@ -483,9 +506,9 @@ struct glyph {
  {{037,021,021,021,021,021,037,000,000}, -1, ".notdef" },
 
  /* Arabic tails */
- {{000,000,000,001,001,001,000,000,000}, -1, "tail1" },
- {{000,000,000,000,000,001,002,002,001}, -1, "tail2" },
- {{000,000,000,004,004,003,000,000,000}, -1, "tail3" },
+ {{000,000,000,001,001,001,000,000,000}, -1, "tail1", ARX },
+ {{000,000,000,000,000,001,002,002,001}, -1, "tail2", ARX },
+ {{000,000,000,002,002,001,000,000,000}, -1, "tail3", ARX },
 
  /* This is getting silly. */
  {{000,000,016,021,037,021,021,000,000}, -1, "a.sc" },
@@ -516,6 +539,18 @@ struct glyph {
  {{000,000,037,002,004,010,037,000,000}, -1, "z.sc" },
 };
 
+inline int
+getpix(char data[YSIZE], int x, int y, unsigned flags) {
+
+	if (y == 5 && ((x <= 0 && (flags & ALX)) ||
+		(x >= XSIZE && (flags & ARX))))
+		return 1;
+	if (x < 0 || x >= XSIZE || y < 0 || y >= YSIZE)
+		return 0;
+	else
+		return (data[y] >> (XSIZE - x - 1)) & 1;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -530,11 +565,11 @@ main(int argc, char **argv)
 	printf("FullName: TTXT\n");
 	printf("FamilyName: TTXT\n");
 	printf("Weight: Medium\n");
-	printf("Copyright: Who knows?\n");
+	printf("Copyright: Copyright 2009 Ben Harris and others\n");
 	printf("Version: 000.001\n");
 	printf("ItalicAngle: 0\n");
 	printf("UnderlinePosition: -50\n");
-	printf("UnderlineWidth: 50\n");
+	printf("UnderlineWidth: 100\n");
 	printf("Ascent: 700\n");
 	printf("Descent: 300\n");
 	printf("LayerCount: 2\n");
@@ -598,7 +633,7 @@ main(int argc, char **argv)
 			    (unsigned)glyphs[i].unicode);
 			break;
 		}
-		dochar(glyphs[i].data);
+		dochar(glyphs[i].data, glyphs[i].flags);
 		printf("EndChar\n");
 	}
 	printf("EndChars\n");
@@ -858,55 +893,57 @@ whitepixel(int x, int y, int bl, int br, int tr, int tl)
 }
 
 void
-dochar(char data[YSIZE])
+dochar(char data[YSIZE], unsigned flags)
 {
 	struct corner corner[XSIZE][YSIZE] = { };
 	int x, y;
 
+#define GETPIX(x,y) (getpix(data, (x), (y), flags))
+
 	clearpath();
 	for (x = 0; x < XSIZE; x++) {
 		for (y = 0; y < YSIZE; y++) {
-			if (getpix(data, x, y)) {
+			if (GETPIX(x, y)) {
 				/* Assume filled in */
 				corner[x][y].tl = 1;
 				corner[x][y].tr = 1;
 				corner[x][y].bl = 1;
 				corner[x][y].br = 1;
 				/* Check for diagonals */
-				if ((getpix(data, x-1, y) == 0 &&
-				     getpix(data, x, y-1) == 0 &&
-				     getpix(data, x-1, y-1) == 1) ||
-				    (getpix(data, x+1, y) == 0 &&
-				     getpix(data, x, y+1) == 0 &&
-				     getpix(data, x+1, y+1) == 1)) {
+				if ((GETPIX(x-1, y) == 0 &&
+				     GETPIX(x, y-1) == 0 &&
+				     GETPIX(x-1, y-1) == 1) ||
+				    (GETPIX(x+1, y) == 0 &&
+				     GETPIX(x, y+1) == 0 &&
+				     GETPIX(x+1, y+1) == 1)) {
 					corner[x][y].tr = 0;
 					corner[x][y].bl = 0;
 				}
-				if ((getpix(data, x+1, y) == 0 &&
-				     getpix(data, x, y-1) == 0 &&
-				     getpix(data, x+1, y-1) == 1) ||
-				    (getpix(data, x-1, y) == 0 &&
-				     getpix(data, x, y+1) == 0 &&
-				     getpix(data, x-1, y+1) == 1)) {
+				if ((GETPIX(x+1, y) == 0 &&
+				     GETPIX(x, y-1) == 0 &&
+				     GETPIX(x+1, y-1) == 1) ||
+				    (GETPIX(x-1, y) == 0 &&
+				     GETPIX(x, y+1) == 0 &&
+				     GETPIX(x-1, y+1) == 1)) {
 					corner[x][y].tl = 0;
 					corner[x][y].br = 0;
 				}
 				/* Avoid odd gaps */
-				if (getpix(data, x-1, y) == 1 ||
-				    getpix(data, x-1, y-1) == 1 ||
-				    getpix(data, x, y-1) == 1)
+				if (GETPIX(x-1, y) == 1 ||
+				    GETPIX(x-1, y-1) == 1 ||
+				    GETPIX(x, y-1) == 1)
 					corner[x][y].tl = 1;
-				if (getpix(data, x+1, y) == 1 ||
-				    getpix(data, x+1, y-1) == 1 ||
-				    getpix(data, x, y-1) == 1)
+				if (GETPIX(x+1, y) == 1 ||
+				    GETPIX(x+1, y-1) == 1 ||
+				    GETPIX(x, y-1) == 1)
 					corner[x][y].tr = 1;
-				if (getpix(data, x-1, y) == 1 ||
-				    getpix(data, x-1, y+1) == 1 ||
-				    getpix(data, x, y+1) == 1)
+				if (GETPIX(x-1, y) == 1 ||
+				    GETPIX(x-1, y+1) == 1 ||
+				    GETPIX(x, y+1) == 1)
 					corner[x][y].bl = 1;
-				if (getpix(data, x+1, y) == 1 ||
-				    getpix(data, x+1, y+1) == 1 ||
-				    getpix(data, x, y+1) == 1)
+				if (GETPIX(x+1, y) == 1 ||
+				    GETPIX(x+1, y+1) == 1 ||
+				    GETPIX(x, y+1) == 1)
 					corner[x][y].br = 1;
 				blackpixel(x, YSIZE - y - 1,
 				    corner[x][y].bl, corner[x][y].br,
@@ -918,21 +955,21 @@ dochar(char data[YSIZE])
 				corner[x][y].bl = 0;
 				corner[x][y].br = 0;
 				/* white pixel -- just diagonals */
-				if (getpix(data, x-1, y) == 1 &&
-				    getpix(data, x, y-1) == 1 &&
-				    getpix(data, x-1, y-1) == 0)
+				if (GETPIX(x-1, y) == 1 &&
+				    GETPIX(x, y-1) == 1 &&
+				    GETPIX(x-1, y-1) == 0)
 					corner[x][y].tl = 1;
-				if (getpix(data, x+1, y) == 1 &&
-				    getpix(data, x, y-1) == 1 &&
-				    getpix(data, x+1, y-1) == 0)
+				if (GETPIX(x+1, y) == 1 &&
+				    GETPIX(x, y-1) == 1 &&
+				    GETPIX(x+1, y-1) == 0)
 					corner[x][y].tr = 1;
-				if (getpix(data, x-1, y) == 1 &&
-				    getpix(data, x, y+1) == 1 &&
-				    getpix(data, x-1, y+1) == 0)
+				if (GETPIX(x-1, y) == 1 &&
+				    GETPIX(x, y+1) == 1 &&
+				    GETPIX(x-1, y+1) == 0)
 					corner[x][y].bl = 1;
-				if (getpix(data, x+1, y) == 1 &&
-				    getpix(data, x, y+1) == 1 &&
-				    getpix(data, x+1, y+1) == 0)
+				if (GETPIX(x+1, y) == 1 &&
+				    GETPIX(x, y+1) == 1 &&
+				    GETPIX(x+1, y+1) == 0)
 					corner[x][y].br = 1;
 				whitepixel(x, YSIZE - y - 1,
 				    corner[x][y].bl, corner[x][y].br,
