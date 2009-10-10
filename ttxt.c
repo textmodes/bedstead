@@ -105,6 +105,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #define XSIZE 6
 #define YSIZE 10
@@ -547,6 +548,8 @@ struct glyph {
  {{000,000,037,002,004,010,037,000,000}, -1, "z.sc" },
 };
 
+static void dolookups(struct glyph *);
+
 inline int
 getpix(char data[YSIZE], int x, int y, unsigned flags) {
 
@@ -617,36 +620,49 @@ main(int argc, char **argv)
 		printf("Width: 600\n");
 		printf("Flags: W\n");
 		printf("LayerCount: 2\n");
-		if ((glyphs[i].flags & SC))
-			printf("Substitution2: \"%s\" %c%s.sc\n",
-			    isupper((unsigned char)glyphs[i].name[0]) ?
-			        "c2sc" : "smcp",
-			    tolower((unsigned char)glyphs[i].name[0]),
-			    glyphs[i].name + 1);
-		switch (glyphs[i].flags & Amask) {
-		case A1:
-			printf("MultipleSubs2: \"tails\" uni%04X tail1\n",
-			    (unsigned)glyphs[i].unicode);
-			break;
-		case A2:
-			printf("MultipleSubs2: \"tails\" uni%04X tail2\n",
-			    (unsigned)glyphs[i].unicode);
-			break;
-		case A3:
-			printf("MultipleSubs2: \"tails\" uni%04X tail3\n",
-			    (unsigned)glyphs[i].unicode);
-			break;
-		case AFI:
-			printf("Substitution2: \"finaisol\" uni%04X.fina\n",
-			    (unsigned)glyphs[i].unicode);
-			break;
-		}
+		dolookups(&glyphs[i]);
 		dochar(glyphs[i].data, glyphs[i].flags);
 		printf("EndChar\n");
 	}
 	printf("EndChars\n");
 	printf("EndSplineFont\n");
 	return 0;
+}
+
+void
+dolookups(struct glyph *g)
+{
+	char glyphname[32];
+
+	if (g->name)
+		strcpy(glyphname, g->name);
+	else
+		sprintf(glyphname, "uni%04X", g->unicode);
+
+	if ((g->flags & SC))
+		printf("Substitution2: \"%s\" %c%s.sc\n",
+		    isupper((unsigned char)g->name[0]) ?
+		    "c2sc" : "smcp",
+		    tolower((unsigned char)g->name[0]),
+		    g->name + 1);
+	switch (g->flags & Amask) {
+	case A1:
+		printf("MultipleSubs2: \"tails\" %s tail1\n",
+			glyphname);
+		break;
+	case A2:
+		printf("MultipleSubs2: \"tails\" %s tail2\n",
+			glyphname);
+		break;
+	case A3:
+		printf("MultipleSubs2: \"tails\" %s tail3\n",
+			glyphname);
+		break;
+	case AFI:
+		printf("Substitution2: \"finaisol\" %s.fina\n",
+			glyphname);
+			break;
+	}
 }
 
 typedef struct vec {
