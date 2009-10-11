@@ -602,7 +602,7 @@ main(int argc, char **argv)
 	    "['salt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 3 0 0 \"aalt: all alternates\" {\"aalt\"} "
 	    "['aalt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
-	printf("Lookup: 257 4 0 \"palt: proportional metrics\" {\"palt\"} "
+	printf("Lookup: 257 0 0 \"palt: proportional metrics\" {\"palt\"} "
 	    "['palt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"smcp: lower-case to small caps\" {\"smcp\"} "
 	    "['smcp' ('latn' <'dflt'>)]\n");
