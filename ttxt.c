@@ -599,9 +599,11 @@ main(int argc, char **argv)
 	/* Force monochrome at 10 and 20 pixels, and greyscale elsewhere. */
 	printf("GaspTable: 5 9 2 10 0 19 3 20 0 65535 3\n");
 	printf("Lookup: 1 0 0 \"salt: stylistic alternates\" {\"salt\"} "
-	    "['salt' ('DFLT' <'dflt'>)]\n");
+	    "['salt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 3 0 0 \"aalt: all alternates\" {\"aalt\"} "
-	    "['aalt' ('DFLT' <'dflt'>)]\n");
+	    "['aalt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
+	printf("Lookup: 257 4 0 \"palt: proportional metrics\" {\"palt\"} "
+	    "['palt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"smcp: lower-case to small caps\" {\"smcp\"} "
 	    "['smcp' ('latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"c2sc: upper-case to small caps\" {\"c2sc\"} "
@@ -634,7 +636,39 @@ main(int argc, char **argv)
 	return 0;
 }
 
-void
+static void
+dopalt(struct glyph *g)
+{
+	int i;
+	unsigned char cols = 0;
+	int dx = 0, dh = 0;
+
+	/*
+	 * For proportional layout, we'd like a left side-bearing of
+	 * one pixel, and a right side-bearing of zero.  Space
+	 * characters get an advance width of three pixels.
+	 */
+	for (i = 0; i < YSIZE; i++)
+		cols |= g->data[i];
+	if (cols == 0)
+		dh = 3 - XSIZE;
+	else {
+		while (!(cols & 1 << (XSIZE - 2))) {
+			cols <<= 1;
+			dx--;
+		}
+		while (!(cols & 1)) {
+			cols >>= 1;
+			dh--;
+		}
+	}
+	if (dx || dh)
+		printf("Position2: \"palt\" dx=%d dy=0 dh=%d dv=0\n",
+		    dx * 100, dh * 100);
+}
+
+
+static void
 dolookups(struct glyph *g)
 {
 	char glyphname[32];
@@ -673,6 +707,7 @@ dolookups(struct glyph *g)
 			glyphname);
 			break;
 	}
+	dopalt(g);
 }
 
 typedef struct vec {
