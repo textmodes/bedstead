@@ -573,9 +573,9 @@ main(int argc, char **argv)
 		if (glyphs[i].unicode == -1)
 			extraglyphs++;
 	printf("SplineFontDB: 3.0\n");
-	printf("FontName: TTXT\n");
-	printf("FullName: TTXT\n");
-	printf("FamilyName: TTXT\n");
+	printf("FontName: Bedstead\n");
+	printf("FullName: Bedstead\n");
+	printf("FamilyName: Bedstead\n");
 	printf("Weight: Medium\n");
 	printf("Copyright: Copyright 2009 Ben Harris and others\n");
 	printf("Version: 000.001\n");
