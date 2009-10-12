@@ -110,6 +110,10 @@
 #define XSIZE 6
 #define YSIZE 10
 
+/* Size of pixels in font design units (usually 1000/em) */
+#define XPIX 100
+#define YPIX 100
+
 struct corner {
 	int tl, tr, bl, br;
 };
@@ -589,10 +593,10 @@ main(int argc, char **argv)
 	printf("Copyright: Copyright 2009 Ben Harris and others\n");
 	printf("Version: 000.001\n");
 	printf("ItalicAngle: 0\n");
-	printf("UnderlinePosition: -50\n");
-	printf("UnderlineWidth: 100\n");
-	printf("Ascent: 700\n");
-	printf("Descent: 300\n");
+	printf("UnderlinePosition: %d\n", -YPIX / 2);
+	printf("UnderlineWidth: %d\n", YPIX);
+	printf("Ascent: %d\n", 7 * YPIX);
+	printf("Descent: %d\n", 3 * YPIX);
 	printf("LayerCount: 2\n");
 	printf("Layer: 0 0 \"Back\" 1\n");
 	printf("Layer: 1 0 \"Fore\" 0\n");
@@ -602,8 +606,8 @@ main(int argc, char **argv)
 	printf("AntiAlias: 1\n");
 	printf("FitToEm: 1\n");
 	printf("BeginPrivate: 2\n");
-	printf(" StdHW 5 [100]\n");
-	printf(" StdVW 5 [100]\n");
+	printf(" StdHW 5 [%d]\n", YPIX);
+	printf(" StdVW 5 [%d]\n", XPIX);
 	printf("EndPrivate\n");
 	/* Force monochrome at 10 and 20 pixels, and greyscale elsewhere. */
 	printf("GaspTable: 5 9 2 10 0 19 3 20 0 65535 3\n");
@@ -633,7 +637,7 @@ main(int argc, char **argv)
 		printf("Encoding: %d %d %d\n",
 		    glyphs[i].unicode != -1 ? glyphs[i].unicode :
 		    65536 + extraglyphs++, glyphs[i].unicode, i);
-		printf("Width: 600\n");
+		printf("Width: %d\n", XSIZE * XPIX);
 		printf("Flags: W\n");
 		printf("LayerCount: 2\n");
 		dolookups(&glyphs[i]);
@@ -673,7 +677,7 @@ dopalt(struct glyph *g)
 	}
 	if (dx || dh)
 		printf("Position2: \"palt\" dx=%d dy=0 dh=%d dv=0\n",
-		    dx * 100, dh * 100);
+		    dx * XPIX, dh * XPIX);
 }
 
 
@@ -904,7 +908,7 @@ emit_path()
 			started = 1;
 			do {
 				printf(" %d %d %s 1\n",
-				    p->v.x*25, p->v.y*25 - 300,
+				    p->v.x*XPIX/4, p->v.y*YPIX/4 - 3*YPIX,
 				    p == &points[i] && p->next ? "m" : "l");
 				p1 = p->next;
 				p->prev = p->next = NULL;
