@@ -12,7 +12,7 @@ bedstead.sfd: bedstead
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' ${.IMPSRC} ${.TARGET}
 
 .ps.png: bedstead.pfa
-	gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray \
+	gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -dTextAlphaBits=4 \
 		-sOutputFile=${.TARGET} bedstead.pfa ${.IMPSRC}
 
 clean: .PHONY
