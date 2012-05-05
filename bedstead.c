@@ -116,7 +116,7 @@
 #define YPIX 100
 
 void doprologue(void);
-void dochar(char data[YSIZE], unsigned flags);
+void dochar(char const data[YSIZE], unsigned flags);
 
 struct glyph {
 	char data[YSIZE];
@@ -134,7 +134,7 @@ struct glyph {
 #define A2  0x320 /* Dual-joining Arabic character with downwards tail. */
 #define A3  0x330 /* Dual-joining Arabic character with loopy tail. */
 #define AFI 0x340 /* Dual-joining Arabic character with special X_n/X_r form. */
-} glyphs[] = {
+} const glyphs[] = {
  /*
   * The first batch of glyphs comes from the code tables at the end of
   * the Mullard SAA5050 series datasheet, dated July 1982.
@@ -694,10 +694,10 @@ struct glyph {
  {{020,020,024,024,024,024,017,000,000}, 0x0587 }, /* ech_yiwn */
 };
 
-static void dolookups(struct glyph *);
+static void dolookups(struct glyph const *);
 
 inline int
-getpix(char data[YSIZE], int x, int y, unsigned flags) {
+getpix(char const data[YSIZE], int x, int y, unsigned flags) {
 
 	if (y == 5 && ((x <= 0 && (flags & ALX)) ||
 		(x >= XSIZE && (flags & ARX))))
@@ -782,7 +782,7 @@ main(int argc, char **argv)
 }
 
 static void
-dopalt(struct glyph *g)
+dopalt(struct glyph const *g)
 {
 	int i;
 	unsigned char cols = 0;
@@ -814,7 +814,7 @@ dopalt(struct glyph *g)
 
 
 static void
-dolookups(struct glyph *g)
+dolookups(struct glyph const *g)
 {
 	char glyphname[32];
 
@@ -1107,7 +1107,7 @@ whitepixel(int x, int y, int bl, int br, int tr, int tl)
 }
 
 void
-dochar(char data[YSIZE], unsigned flags)
+dochar(char const data[YSIZE], unsigned flags)
 {
 	int x, y;
 
