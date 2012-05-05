@@ -104,6 +104,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -113,10 +114,6 @@
 /* Size of pixels in font design units (usually 1000/em) */
 #define XPIX 100
 #define YPIX 100
-
-struct corner {
-	int tl, tr, bl, br;
-};
 
 void doprologue(void);
 void dochar(char data[YSIZE], unsigned flags);
@@ -1112,85 +1109,48 @@ whitepixel(int x, int y, int bl, int br, int tr, int tl)
 void
 dochar(char data[YSIZE], unsigned flags)
 {
-	struct corner corner[XSIZE][YSIZE] = { };
 	int x, y;
 
 #define GETPIX(x,y) (getpix(data, (x), (y), flags))
+#define L GETPIX(x-1, y)
+#define R GETPIX(x+1, y)
+#define U GETPIX(x, y-1)
+#define D GETPIX(x, y+1)
+#define UL GETPIX(x-1, y-1)
+#define UR GETPIX(x+1, y-1)
+#define DL GETPIX(x-1, y+1)
+#define DR GETPIX(x+1, y+1)
 
 	clearpath();
 	for (x = 0; x < XSIZE; x++) {
 		for (y = 0; y < YSIZE; y++) {
 			if (GETPIX(x, y)) {
+				bool tl, tr, bl, br;
+
 				/* Assume filled in */
-				corner[x][y].tl = 1;
-				corner[x][y].tr = 1;
-				corner[x][y].bl = 1;
-				corner[x][y].br = 1;
+				tl = tr = bl = br = true;
 				/* Check for diagonals */
-				if ((GETPIX(x-1, y) == 0 &&
-				     GETPIX(x, y-1) == 0 &&
-				     GETPIX(x-1, y-1) == 1) ||
-				    (GETPIX(x+1, y) == 0 &&
-				     GETPIX(x, y+1) == 0 &&
-				     GETPIX(x+1, y+1) == 1)) {
-					corner[x][y].tr = 0;
-					corner[x][y].bl = 0;
-				}
-				if ((GETPIX(x+1, y) == 0 &&
-				     GETPIX(x, y-1) == 0 &&
-				     GETPIX(x+1, y-1) == 1) ||
-				    (GETPIX(x-1, y) == 0 &&
-				     GETPIX(x, y+1) == 0 &&
-				     GETPIX(x-1, y+1) == 1)) {
-					corner[x][y].tl = 0;
-					corner[x][y].br = 0;
-				}
+				if ((UL && !U && !L) || (DR && !D && !R))
+					tr = bl = false;
+				if ((UR && !U && !R) || (DL && !D && !L))
+					tl = br = false;
 				/* Avoid odd gaps */
-				if (GETPIX(x-1, y) == 1 ||
-				    GETPIX(x-1, y-1) == 1 ||
-				    GETPIX(x, y-1) == 1)
-					corner[x][y].tl = 1;
-				if (GETPIX(x+1, y) == 1 ||
-				    GETPIX(x+1, y-1) == 1 ||
-				    GETPIX(x, y-1) == 1)
-					corner[x][y].tr = 1;
-				if (GETPIX(x-1, y) == 1 ||
-				    GETPIX(x-1, y+1) == 1 ||
-				    GETPIX(x, y+1) == 1)
-					corner[x][y].bl = 1;
-				if (GETPIX(x+1, y) == 1 ||
-				    GETPIX(x+1, y+1) == 1 ||
-				    GETPIX(x, y+1) == 1)
-					corner[x][y].br = 1;
-				blackpixel(x, YSIZE - y - 1,
-				    corner[x][y].bl, corner[x][y].br,
-				    corner[x][y].tr, corner[x][y].tl);
+				if (L || UL || U) tl = true;
+				if (R || UR || U) tr = true;
+				if (L || DL || D) bl = true;
+				if (R || DR || D) br = true;
+				blackpixel(x, YSIZE - y - 1, bl, br, tr, tl);
 			} else {
+				bool tl, tr, bl, br;
+
 				/* Assume clear */
-				corner[x][y].tl = 0;
-				corner[x][y].tr = 0;
-				corner[x][y].bl = 0;
-				corner[x][y].br = 0;
+				tl = tr = bl = br = false;
 				/* white pixel -- just diagonals */
-				if (GETPIX(x-1, y) == 1 &&
-				    GETPIX(x, y-1) == 1 &&
-				    GETPIX(x-1, y-1) == 0)
-					corner[x][y].tl = 1;
-				if (GETPIX(x+1, y) == 1 &&
-				    GETPIX(x, y-1) == 1 &&
-				    GETPIX(x+1, y-1) == 0)
-					corner[x][y].tr = 1;
-				if (GETPIX(x-1, y) == 1 &&
-				    GETPIX(x, y+1) == 1 &&
-				    GETPIX(x-1, y+1) == 0)
-					corner[x][y].bl = 1;
-				if (GETPIX(x+1, y) == 1 &&
-				    GETPIX(x, y+1) == 1 &&
-				    GETPIX(x+1, y+1) == 0)
-					corner[x][y].br = 1;
-				whitepixel(x, YSIZE - y - 1,
-				    corner[x][y].bl, corner[x][y].br,
-				    corner[x][y].tr, corner[x][y].tl);
+				if (L && U && !UL) tl = true;
+				if (R && U && !UR) tr = true;
+				if (L && D && !DL) bl = true;
+				if (R && D && !DR) br = true;
+				whitepixel(x, YSIZE - y - 1, bl, br, tr, tl);
 			}
 		}
 	}
