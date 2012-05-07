@@ -124,7 +124,6 @@ struct glyph {
 	char const *name;
 	unsigned int flags;
 #define SC  0x01 /* Character has a small-caps variant. */
-#define SA  0x02 /* Character has a stylistic alternate (%s.alt) */
 /* Arabic classes */
 #define ARX 0x100 /* Arabic glyph joins to the right */
 #define ALX 0x200 /* Arabic glyph joins to the left */
@@ -152,9 +151,9 @@ struct glyph {
  {{010,004,002,002,002,004,010,000,000}, 0x0029, "parenright" },
  {{004,025,016,004,016,025,004,000,000}, 0x002a, "asterisk" },
  {{000,004,004,037,004,004,000,000,000}, 0x002b, "plus" },
- {{000,000,000,000,000,004,004,010,000}, 0x002c, "comma", SA },
+ {{000,000,000,000,000,004,004,010,000}, 0x002c, "comma"},
  {{000,000,000,016,000,000,000,000,000}, 0x002d, "hyphen" },
- {{000,000,000,000,000,000,004,000,000}, 0x002e, "period", SA },
+ {{000,000,000,000,000,000,004,000,000}, 0x002e, "period"},
  {{000,001,002,004,010,020,000,000,000}, 0x002f, "slash" },
  {{004,012,021,021,021,012,004,000,000}, 0x0030, "zero" },
  {{004,014,004,004,004,004,016,000,000}, 0x0031, "one" },
@@ -166,8 +165,8 @@ struct glyph {
  {{037,001,002,004,010,010,010,000,000}, 0x0037, "seven" },
  {{016,021,021,016,021,021,016,000,000}, 0x0038, "eight" },
  {{016,021,021,017,001,002,014,000,000}, 0x0039, "nine" },
- {{000,000,004,000,000,000,004,000,000}, 0x003a, "colon", SA },
- {{000,000,004,000,000,004,004,010,000}, 0x003b, "semicolon", SA },
+ {{000,000,004,000,000,000,004,000,000}, 0x003a, "colon"},
+ {{000,000,004,000,000,004,004,010,000}, 0x003b, "semicolon"},
  {{002,004,010,020,010,004,002,000,000}, 0x003c, "less" },
  {{000,000,037,000,037,000,000,000,000}, 0x003d, "equal" },
  {{010,004,002,001,002,004,010,000,000}, 0x003e, "greater" },
@@ -176,7 +175,7 @@ struct glyph {
  {{004,012,021,021,037,021,021,000,000}, 0x0041, "A", SC },
  {{036,021,021,036,021,021,036,000,000}, 0x0042, "B", SC },
  {{016,021,020,020,020,021,016,000,000}, 0x0043, "C", SC },
- {{036,021,021,021,021,021,036,000,000}, 0x0044, "D", SC|SA },
+ {{036,021,021,021,021,021,036,000,000}, 0x0044, "D", SC },
  {{037,020,020,036,020,020,037,000,000}, 0x0045, "E", SC },
  {{037,020,020,036,020,020,020,000,000}, 0x0046, "F", SC },
  {{016,021,020,020,023,021,017,000,000}, 0x0047, "G", SC },
@@ -184,7 +183,7 @@ struct glyph {
  {{016,004,004,004,004,004,016,000,000}, 0x0049, "I", SC },
  {{001,001,001,001,001,021,016,000,000}, 0x004a, "J", SC },
  {{021,022,024,030,024,022,021,000,000}, 0x004b, "K", SC },
- {{020,020,020,020,020,020,037,000,000}, 0x004c, "L", SC|SA },
+ {{020,020,020,020,020,020,037,000,000}, 0x004c, "L", SC },
  {{021,033,025,025,021,021,021,000,000}, 0x004d, "M", SC },
  {{021,021,031,025,023,021,021,000,000}, 0x004e, "N", SC },
  {{016,021,021,021,021,021,016,000,000}, 0x004f, "O", SC },
@@ -240,10 +239,10 @@ struct glyph {
  /* Extra characters found in the English (SAA5050) character set */
  {{006,011,010,034,010,010,037,000,000}, 0x00a3, "sterling" },
  {{004,004,004,000,000,000,000,000,000}, 0x0027, "quotesingle" },
- {{000,004,010,037,010,004,000,000,000}, 0x2190, "arrowleft", SA },
+ {{000,004,010,037,010,004,000,000,000}, 0x2190, "arrowleft" },
  {{020,020,020,020,026,001,002,004,007}, 0x00bd, "onehalf" },
- {{000,004,002,037,002,004,000,000,000}, 0x2192, "arrowright", SA },
- {{000,004,016,025,004,004,000,000,000}, 0x2191, "arrowup", SA },
+ {{000,004,002,037,002,004,000,000,000}, 0x2192, "arrowright" },
+ {{000,004,016,025,004,004,000,000,000}, 0x2191, "arrowup" },
  {{000,000,000,037,000,000,000,000,000}, 0x2013, "endash" },
  {{010,010,010,010,011,003,005,007,001}, 0x00bc, "onequarter" },
  {{012,012,012,012,012,012,012,000,000}, 0x2016, "dblverticalbar" },
@@ -251,10 +250,10 @@ struct glyph {
  {{000,004,000,037,000,004,000,000,000}, 0x00f7, "divide" },
 
  /* Extra characters found in the German (SAA5051) character set */
- {{000,000,000,000,000,010,010,020,000}, -1, "comma.alt" },
- {{000,000,000,000,000,014,014,000,000}, -1, "period.alt" },
- {{000,000,000,010,000,000,010,000,000}, -1, "colon.alt" },
- {{000,000,010,000,000,010,010,020,000}, -1, "semicolon.alt" },
+ {{000,000,000,000,000,010,010,020,000}, -1, "comma.saa5051" },
+ {{000,000,000,000,000,014,014,000,000}, -1, "period.saa5051" },
+ {{000,000,000,010,000,000,010,000,000}, -1, "colon.saa5051" },
+ {{000,000,010,000,000,010,010,020,000}, -1, "semicolon.saa5051" },
  {{016,021,020,016,021,016,001,021,016}, 0x00a7, "section" },
  {{012,000,016,021,037,021,021,000,000}, 0x00c4, "Adieresis" },
  {{012,000,016,021,021,021,016,000,000}, 0x00d6, "Odieresis" },
@@ -268,15 +267,15 @@ struct glyph {
  /* Extra characters found in the Swedish (SAA5052) character set */
  {{000,000,021,016,012,016,021,000,000}, 0x00a4, "currency" },
  {{002,004,037,020,036,020,037,000,000}, 0x00c9, "Eacute" },
- {{016,011,011,011,011,011,016,000,000}, -1, "D.alt", SC },
- {{010,010,010,010,010,010,017,000,000}, -1, "L.alt", SC },
+ {{016,011,011,011,011,011,016,000,000}, -1, "D.saa5052", SC },
+ {{010,010,010,010,010,010,017,000,000}, -1, "L.saa5052", SC },
  {{004,000,016,021,037,021,021,000,000}, 0x00c5, "Aring" },
  {{002,004,016,021,037,020,016,000,000}, 0x00e9, "eacute" },
  {{004,000,016,001,017,021,017,000,000}, 0x00e5, "aring" },
 
  /* Extra characters found in the Italian (SAA5053) character set */
- {{000,000,017,020,020,020,017,002,004}, 0x00e7, "ccedilla", SA },
- {{010,004,021,021,021,021,017,000,000}, 0x00f9, "ugrave", SA },
+ {{000,000,017,020,020,020,017,002,004}, 0x00e7, "ccedilla" },
+ {{010,004,021,021,021,021,017,000,000}, 0x00f9, "ugrave" },
  {{010,004,016,001,017,021,017,000,000}, 0x00e0, "agrave" },
  {{010,004,000,016,021,021,016,000,000}, 0x00f2, "ograve" },
  {{010,004,016,021,037,020,016,000,000}, 0x00e8, "egrave" },
@@ -286,12 +285,12 @@ struct glyph {
  {{012,000,014,004,004,004,016,000,000}, 0x00ef, "idieresis" },
  {{012,000,016,021,037,020,016,000,000}, 0x00eb, "edieresis" },
  {{004,012,016,021,037,020,016,000,000}, 0x00ea, "ecircumflex" },
- {{004,002,021,021,021,021,017,000,000}, -1, "ugrave.alt" },
+ {{004,002,021,021,021,021,017,000,000}, -1, "ugrave.saa5054" },
  {{004,012,000,014,004,004,016,000,000}, 0x00ee, "icircumflex" },
  {{004,012,016,001,017,021,017,000,000}, 0x00e2, "acircumflex" },
  {{004,012,016,021,021,021,016,000,000}, 0x00f4, "ocircumflex" },
  {{004,012,000,021,021,021,017,000,000}, 0x00fb, "ucircumflex" },
- {{000,000,017,020,020,020,017,002,006}, -1, "ccedilla.alt" },
+ {{000,000,017,020,020,020,017,002,006}, -1, "ccedilla.saa5054" },
 
  /* Extra characters found in the Hebrew (SAA5056) character set */
  {{000,021,011,025,022,021,021,000,000}, 0x05d0 }, /* alef */
@@ -554,7 +553,7 @@ struct glyph {
  {{000,000,000,000,000,011,011,022,000}, 0x201e, "quotedblbase" },
  {{022,022,011,000,000,000,000,000,000}, 0x201f }, /* quotedblreversed */
  {{016,021,035,033,033,035,031,021,016}, 0x2117 }, /* phonographic */
- {{000,004,004,025,016,004,000,000,000}, 0x2193, "arrowdown", SA },
+ {{000,004,004,025,016,004,000,000,000}, 0x2193, "arrowdown" },
  {{000,004,010,023,010,004,000,000,000}, -1, "arrowleft.alt" },
  {{000,004,002,031,002,004,000,000,000}, -1, "arrowright.alt" },
  {{000,004,012,021,004,004,000,000,000}, -1, "arrowup.alt" },
@@ -748,7 +747,8 @@ getpix(char const data[YSIZE], int x, int y, unsigned flags) {
 int
 main(int argc, char **argv)
 {
-	int i, nglyphs = sizeof(glyphs) / sizeof(glyphs[0]);
+	int i;
+	int const nglyphs = sizeof(glyphs) / sizeof(glyphs[0]);
 	int extraglyphs = 0;
 
 	for (i = 0; i < nglyphs; i++)
@@ -853,41 +853,53 @@ dopalt(struct glyph const *g)
 static void
 dolookups(struct glyph const *g)
 {
-	char glyphname[32];
+	char prefix[32];
+	size_t plen;
+	int i;
+	int const nglyphs = sizeof(glyphs) / sizeof(glyphs[0]);
 
 	if (g->name)
-		strcpy(glyphname, g->name);
+		plen = sprintf(prefix, "%s.", g->name);
 	else
-		sprintf(glyphname, "uni%04X", g->unicode);
+		plen = sprintf(prefix, "uni%04X.", g->unicode);
+	assert(plen < 32);
 
-	if ((g->flags & SA))
-		printf("Substitution2: \"salt\" %s.alt\n", glyphname);
-	if ((g->flags & SC))
-		printf("Substitution2: \"%s\" %c%s.sc\n",
-		    isupper((unsigned char)glyphname[0]) ? "c2sc" : "smcp",
-		    tolower((unsigned char)glyphname[0]), g->name + 1);
-	if ((g->flags & (SA))) {
-		printf("AlternateSubs2: \"aalt\"");
-		if ((g->flags & SA)) printf(" %s.alt", glyphname);
-		printf("\n");
+	/* Look for related glyphs */
+	for (i = 0; i < nglyphs; i++) {
+		if (glyphs[i].name &&
+		    strncmp(prefix, glyphs[i].name, plen) == 0) {
+			if (strcmp(glyphs[i].name + plen, "sc") != 0 &&
+			    strcmp(glyphs[i].name + plen, "medi") != 0 &&
+			    strcmp(glyphs[i].name + plen, "fina") != 0 &&
+			    strcmp(glyphs[i].name + plen, "isol")) {
+				printf("Substitution2: \"salt\" %s\n",
+				       glyphs[i].name);
+				printf("AlternateSubs2: \"aalt\" %s\n",
+				       glyphs[i].name);
+			}
+		}
 	}
+	if ((g->flags & SC))
+		printf("Substitution2: \"%s\" %c%ssc\n",
+		    isupper((unsigned char)prefix[0]) ? "c2sc" : "smcp",
+		    tolower((unsigned char)prefix[0]), prefix + 1);
 	switch (g->flags & Amask) {
 	case A1 & Amask:
-		printf("MultipleSubs2: \"tails\" %s tail1\n",
-			glyphname);
+		printf("MultipleSubs2: \"tails\" %.*s tail1\n",
+		       plen - 1, prefix);
 		break;
 	case A2 & Amask:
-		printf("MultipleSubs2: \"tails\" %s tail2\n",
-			glyphname);
+		printf("MultipleSubs2: \"tails\" %.*s tail2\n",
+		       plen - 1, prefix);
 		break;
 	case A3 & Amask:
-		printf("MultipleSubs2: \"tails\" %s tail3\n",
-			glyphname);
+		printf("MultipleSubs2: \"tails\" %.*s tail3\n",
+		       plen - 1, prefix);
 		break;
 	case AFI & Amask:
-		printf("Substitution2: \"finaisol\" %s.fina\n",
-			glyphname);
-			break;
+		printf("Substitution2: \"finaisol\" %sfina\n",
+			prefix);
+		break;
 	}
 	dopalt(g);
 }
