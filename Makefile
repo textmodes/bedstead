@@ -15,5 +15,9 @@ bedstead.sfd: bedstead
 	gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -dTextAlphaBits=4 \
 		-sOutputFile=$@ bedstead.pfa $<
 
+df.png: df.ps bedstead.pfa
+	gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=png16m \
+		-sOutputFile=$@ bedstead.pfa $<
+
 clean: .PHONY
 	rm -f bedstead *.sfd *.otf *.pfa *.png

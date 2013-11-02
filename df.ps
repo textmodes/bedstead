@@ -1,0 +1,50 @@
+/size 20 def
+/pw size 16 mul 6 mul 10 div def
+/ph size 16 mul def
+<< /HWResolution [ 72 72 ]
+   /PageSize [ pw ph ] >> setpagedevice
+1 0 1 setrgbcolor 0 0 pw ph rectfill
+1 1 1 setrgbcolor
+/Bedstead findfont size scalefont setfont
+/row { %def
+    0 0 moveto
+    { %forall
+	glyphshow
+    } forall
+    0 size neg translate
+} def
+0 size 15.3 mul translate
+[ /space/smileface/invsmileface/heart/diamond/club/spade/bullet
+  /invbullet/circle/invcircle/male/female/musicalnote/musicalnotedbl/sun ] row
+[ /triagrt/triaglf/arrowupdn/exclamdbl/paragraph/section/filledrect
+  /arrowupdnbse/arrowup/arrowdown/arrowright/arrowleft/orthogonal/arrowboth
+  /triagup/triagdn ] row
+[ /space/exclam/quotedbl/numbersign/dollar/percent/ampersand/quotesingle
+  /parenleft/parenright/asterisk/plus/comma/hyphen/period/slash ] row
+[ /zero/one/two/three/four/five/six/seven
+  /eight/nine/colon/semicolon/less/equal/greater/question ] row
+[ /at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O ] row
+[ /P/Q/R/S/T/U/V/W
+  /X/Y/Z/bracketleft/backslash/bracketright/asciicircum/underscore ] row
+[ /grave/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o ] row
+[ /p/q/r/s/t/u/v/w/x/y/z/braceleft/bar/braceright/asciitilde/house ] row
+[ /Ccedilla/udieresis/eacute/acircum/adieresis/agrave/aring/ccedilla
+  /ecircum/edieresis/egrave/idieresis/icircum/igrave/Adieresis/Aring ] row
+[ /Eacute/ae/AE/ocircum/odieresis/ograve/ucircum/ugrave
+  /ydieresis/Odieresis/Udieresis/cent/sterling/yen/peseta/florin ] row
+[ /aacute/iacute/oacute/uacute/ntilde/Ntilde/ordfemenine/ordmasculine
+  /questiondown/revlogicalnot/logicalnot/onehalf/onequarter/exclamdown
+  /guillemotleft/guillemotright ] row
+[ /ltshade/shade/dkshade/SF110000/SF090000/SF190000/SF200000/SF210000/SF220000
+  /SF230000/SF240000/SF250000/SF260000/SF270000/SF280000/SF030000 ] row
+[ /SF020000/SF070000/SF060000/SF080000/SF100000/SF050000/SF360000/SF370000
+  /SF380000/SF390000/SF400000/SF410000/SF420000/SF430000/SF440000
+  /SF450000 ] row
+[ /SF460000/SF470000/SF480000/SF490000/SF500000/SF510000/SF520000/SF530000
+  /SF540000/SF040000/SF010000/block/dnblock/lfblock/rtblock/upblock ] row
+[ /alpha/beta/Gamma/pi/Sigma/sigma/mu/tau
+  /Phi/Theta/uni03A9/delta/infinity/phi/epsilon/intersection ] row
+[ /equivalence/plusminus/greaterequal/lessequal/integraltp/integralbt/divide
+  /approxequal/degree/uni2219/periodcentered/radical/uni207F/twosuperior
+  /filledbox/space ] row
+showpage
