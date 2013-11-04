@@ -55,7 +55,7 @@
  * double the resolution and add more pixels to diagonals each time,
  * but this ends up with the diagonals being much too heavy.  Instead,
  * in places where the SAA5050 would add pixels, this program adds a
- * largeish triangle to each unfilled pixel, and remove a small
+ * largeish triangle to each unfilled pixel, and removes a small
  * triangle from each filled one, something like this:
  *
  * . #  -> . . # # -> . . / # or # . -> # # . . -> # \ . .
