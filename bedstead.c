@@ -984,6 +984,15 @@ main(int argc, char **argv)
 	printf("GaspTable: 5 9 2 10 0 19 3 20 0 65535 3\n");
 	printf("Lookup: 1 0 0 \"salt: stylistic alternates\" {\"salt\"} "
 	    "['salt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
+	printf("Lookup: 1 0 0 \"ss01: SAA5051 forms\" {\"ss01\"} "
+	    "['ss01' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
+	printf("OtfFeatName: 'ss01' 1033 \"SAA5051\"\n");
+	printf("Lookup: 1 0 0 \"ss02: SAA5052 forms\" {\"ss02\"} "
+	    "['ss02' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
+	printf("OtfFeatName: 'ss02' 1033 \"SAA5052\"\n");
+	printf("Lookup: 1 0 0 \"ss04: SAA5054 forms\" {\"ss04\"} "
+	    "['ss04' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
+	printf("OtfFeatName: 'ss04' 1033 \"SAA5054\"\n");
 	printf("Lookup: 3 0 0 \"aalt: all alternates\" {\"aalt\"} "
 	    "['aalt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 257 0 0 \"palt: proportional metrics\" {\"palt\"} "
@@ -1070,15 +1079,20 @@ dolookups(struct glyph const *g)
 	for (i = 0; i < nglyphs; i++) {
 		if (glyphs[i].name &&
 		    strncmp(prefix, glyphs[i].name, plen) == 0) {
-			if (strcmp(glyphs[i].name + plen, "sc") != 0 &&
-			    strcmp(glyphs[i].name + plen, "medi") != 0 &&
-			    strcmp(glyphs[i].name + plen, "fina") != 0 &&
-			    strcmp(glyphs[i].name + plen, "isol")) {
+			if (strcmp(glyphs[i].name + plen, "alt") == 0)
 				printf("Substitution2: \"salt\" %s\n",
 				       glyphs[i].name);
-				printf("AlternateSubs2: \"aalt\" %s\n",
+			if (strcmp(glyphs[i].name + plen, "saa5051") == 0)
+				printf("Substitution2: \"ss01\" %s\n",
 				       glyphs[i].name);
-			}
+			if (strcmp(glyphs[i].name + plen, "saa5052") == 0)
+				printf("Substitution2: \"ss02\" %s\n",
+				       glyphs[i].name);
+			if (strcmp(glyphs[i].name + plen, "saa5054") == 0)
+				printf("Substitution2: \"ss04\" %s\n",
+				       glyphs[i].name);
+			printf("AlternateSubs2: \"aalt\" %s\n",
+			       glyphs[i].name);
 		}
 	}
 	if ((g->flags & SC))
