@@ -6,7 +6,7 @@ bedstead.sfd: bedstead
 .SUFFIXES: .ps .png .sfd .otf .pfa
 
 .sfd.otf:
-	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
+	fontforge -lang=ff -c 'Open($$1); BitmapsAvail([10, 20]); Generate($$2, "bdf")' $< $@
 
 .sfd.pfa:
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
@@ -20,4 +20,4 @@ df.png: df.ps bedstead.pfa
 		-sOutputFile=$@ bedstead.pfa $<
 
 clean: .PHONY
-	rm -f bedstead *.sfd *.otf *.pfa *.png
+	rm -f bedstead *.sfd *.otf *.bdf *.pfa *.png
