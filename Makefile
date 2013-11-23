@@ -19,5 +19,6 @@ df.png: df.ps bedstead.pfa
 	gs -dSAFER -sDEVICE=png16m \
 		-o $@ bedstead.pfa $<
 
-clean: .PHONY
+.PHONY: clean
+clean:
 	rm -f bedstead *.sfd *.otf *.bdf *.pfa *.png
