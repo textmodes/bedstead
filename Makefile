@@ -1,4 +1,4 @@
-all: bedstead.otf sample.png title.png
+all: bedstead.otf sample.png title.png bedstead-10-df.png bedstead-20-df.png
 
 bedstead.sfd: bedstead
 	./bedstead > bedstead.sfd
@@ -13,8 +13,8 @@ bedstead.sfd: bedstead
 	gs -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 \
 		-o $@ bedstead.pfa $<
 
-df.png: df.ps bedstead.pfa
-	gs -dSAFER -sDEVICE=png16m \
+bedstead-%-df.png: df.ps bedstead.pfa
+	gs -dSAFER -dsize=$* -sDEVICE=png16m \
 		-o $@ bedstead.pfa $<
 
 .PHONY: clean
