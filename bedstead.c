@@ -966,8 +966,8 @@ main(int argc, char **argv)
 	printf("ItalicAngle: 0\n");
 	printf("UnderlinePosition: %d\n", -YPIX / 2);
 	printf("UnderlineWidth: %d\n", YPIX);
-	printf("Ascent: %d\n", 7 * YPIX);
-	printf("Descent: %d\n", 3 * YPIX);
+	printf("Ascent: %d\n", 8 * YPIX);
+	printf("Descent: %d\n", 2 * YPIX);
 	printf("LayerCount: 2\n");
 	printf("Layer: 0 0 \"Back\" 1\n");
 	printf("Layer: 1 0 \"Fore\" 0\n");
