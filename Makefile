@@ -10,11 +10,11 @@ bedstead.sfd: bedstead
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
 
 %.png: %.ps bedstead.pfa
-	gs -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 \
+	gs -q -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 \
 		-o $@ bedstead.pfa $<
 
 bedstead-%-df.png: df.ps bedstead.pfa
-	gs -dSAFER -dsize=$* -sDEVICE=png16m \
+	gs -q -dSAFER -dsize=$* -sDEVICE=png16m \
 		-o $@ bedstead.pfa $<
 
 .PHONY: clean
