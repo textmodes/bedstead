@@ -12,12 +12,12 @@ bedstead.sfd: bedstead
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
 
 .ps.png: bedstead.pfa
-	gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -dTextAlphaBits=4 \
-		-sOutputFile=$@ bedstead.pfa $<
+	gs -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 \
+		-o $@ bedstead.pfa $<
 
 df.png: df.ps bedstead.pfa
-	gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=png16m \
-		-sOutputFile=$@ bedstead.pfa $<
+	gs -dSAFER -sDEVICE=png16m \
+		-o $@ bedstead.pfa $<
 
 clean: .PHONY
 	rm -f bedstead *.sfd *.otf *.bdf *.pfa *.png
