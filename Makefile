@@ -3,15 +3,13 @@ all: bedstead.otf sample.png title.png
 bedstead.sfd: bedstead
 	./bedstead > bedstead.sfd
 
-.SUFFIXES: .ps .png .sfd .otf .pfa
-
-.sfd.otf:
+%.otf: %.sfd
 	fontforge -lang=ff -c 'Open($$1); BitmapsAvail([10, 20]); Generate($$2, "bdf")' $< $@
 
-.sfd.pfa:
+%.pfa: %.sfd
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
 
-.ps.png: bedstead.pfa
+%.png: %.ps bedstead.pfa
 	gs -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 \
 		-o $@ bedstead.pfa $<
 
