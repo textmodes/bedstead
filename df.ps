@@ -1,3 +1,13 @@
+%!
+% This program produces a tileset image suitable for use with
+% Dwarf Fortress.  This is an image with 256 glyphs in a 16x16
+% square, in white on magenta.  The character set is (roughly)
+% IBM Code Page 437.
+%
+% "size" should be defined in systemdict to be the pixel size of font
+% to generate, e.g. using -dsize=10 as a command-line option to
+% Ghostscript.
+%
 /pw size 16 mul 6 mul 10 div def
 /ph size 16 mul def
 << /HWResolution [ 72 72 ]
