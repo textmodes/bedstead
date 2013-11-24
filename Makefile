@@ -3,19 +3,18 @@ all: bedstead.otf sample.png title.png bedstead-10-df.png bedstead-20-df.png
 bedstead.sfd: bedstead
 	./bedstead > bedstead.sfd
 
-%.otf: %.sfd
-	fontforge -lang=ff -c 'Open($$1); BitmapsAvail([10, 20]); Generate($$2, "bdf")' $< $@
+%.otf %-10.bdf %-20.bdf: %.sfd
+	fontforge -lang=ff \
+	    -c 'Open($$1); BitmapsAvail([10, 20]); Generate($$2, "bdf")' $< $@
 
-%.pfa: %.sfd
+%.pfa %.afm: %.sfd
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
 
 %.png: %.ps bedstead.pfa
-	gs -q -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 \
-		-o $@ bedstead.pfa $<
+	gs -q -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 -o $@ bedstead.pfa $<
 
 bedstead-%-df.png: df.ps bedstead.pfa
-	gs -q -dSAFER -dsize=$* -sDEVICE=png16m \
-		-o $@ bedstead.pfa $<
+	gs -q -dSAFER -dsize=$* -sDEVICE=png16m -o $@ bedstead.pfa $<
 
 .PHONY: clean
 clean:
