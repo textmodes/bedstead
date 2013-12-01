@@ -27,8 +27,11 @@ DISTFILES = bedstead.c Makefile \
 
 .PHONY: dist
 
-dist: $(DISTFILES)
-	mkdir bedstead-dist
-	ln $(DISTFILES) bedstead-dist
-	zip -r bedstead.zip bedstead-dist
-	rm -r bedstead-dist
+dist: $(DISTFILES) bedstead
+	rm -rf bedstead-$$(sed -n 's/^Version: //p' < bedstead.sfd)
+	mkdir bedstead-$$(sed -n 's/^Version: //p' < bedstead.sfd)
+	ln $(DISTFILES) \
+	    bedstead-$$(sed -n 's/^Version: //p' < bedstead.sfd)
+	zip -r bedstead-$$(sed -n 's/^Version: //p' < bedstead.sfd).zip \
+	    bedstead-$$(sed -n 's/^Version: //p' < bedstead.sfd)
+	rm -r bedstead-$$(sed -n 's/^Version: //p' < bedstead.sfd)
