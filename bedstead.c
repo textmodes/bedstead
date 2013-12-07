@@ -388,6 +388,7 @@ struct glyph {
  {{000,000,025,025,025,025,037,001,000}, 0x0449 }, /* shcha */
  {{000,000,021,021,021,017,001,000,000}, 0x0447 }, /* che */
 
+#ifdef ARABIC
  /*
   * The second batch of glyphs was found in the appendices to
   * "Displayable Character Sets for Broadcast Teletext", EBU Tech
@@ -478,6 +479,7 @@ struct glyph {
  {{000,004,012,012,021,021,000,000,000}, 0x0668 }, /* eight */
  {{000,014,022,016,002,002,000,000,000}, 0x0669 }, /* nine */
  /* Appendix 9 also contains a Hebrew alphabet, but we've already got one. */
+#endif
 
  /*
   * The third batch of glyphs were specially designed for this font.
@@ -788,10 +790,12 @@ struct glyph {
  {{000,025,000,021,000,025,000,000,000}, 0x2b1a }, /* dottedsquare */
  {{037,021,021,021,021,021,037,000,000}, -1, ".notdef" },
 
+#ifdef ARABIC
  /* Arabic tails */
  {{000,000,000,001,001,001,000,000,000}, -1, "tail1", ARX },
  {{000,000,000,000,000,001,002,002,001}, -1, "tail2", ARX },
  {{000,000,000,002,002,001,000,000,000}, -1, "tail3", ARX },
+#endif
 
  /* This is getting silly. */
  {{000,000,016,021,037,021,021,000,000}, -1, "a.sc" },
@@ -873,6 +877,7 @@ struct glyph {
  {{000,000,012,021,025,025,012,000,000}, 0x03c9, "omega" },
  {{004,004,016,025,025,025,016,004,004}, 0x03d5, "phi1" },
 
+#ifdef ARMENIAN
  /* Armenian */
  {{021,021,021,021,025,022,015,000,000}, 0x0531 }, /* Ayb */
  {{016,021,021,020,037,020,020,000,000}, 0x0532 }, /* Ben */
@@ -953,6 +958,7 @@ struct glyph {
  {{014,024,016,005,025,025,016,004,004}, 0x0586 }, /* feh */
  {{020,020,024,024,024,024,017,000,000}, 0x0587 }, /* ech_yiwn */
  {{014,022,022,007,002,007,002,000,000}, 0x058f }, /* armdram */
+#endif
 };
 
 static void dolookups(struct glyph const *);
