@@ -1048,6 +1048,32 @@ main(int argc, char **argv)
 	int const nglyphs = sizeof(glyphs) / sizeof(glyphs[0]);
 	int extraglyphs = 0;
 
+        if (argc > 1) {
+                char data[YSIZE], *endptr;
+                int i, y;
+                unsigned long u;
+
+                for (y = 0; y < YSIZE; y++)
+                        data[y] = 0;
+
+                y = 0;
+                for (i = 1; i < argc; i++) {
+                        if (y >= YSIZE) {
+                                fprintf(stderr, "too many arguments\n");
+                                return 1;
+                        }
+                        u = strtoul(argv[i], &endptr, 0);
+                        if (u > 077 || !argv[i] || *endptr) {
+                                fprintf(stderr, "invalid argument \"%s\"\n",
+                                        argv[i]);
+                                return 1;
+                        }
+                        data[y++] = u;
+                }
+		dochar(data, 0);
+                return 0;
+        }
+
 	for (i = 0; i < nglyphs; i++)
 		if (glyphs[i].unicode == -1)
 			extraglyphs++;
