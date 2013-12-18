@@ -1197,15 +1197,15 @@ dolookups(struct glyph const *g)
 	switch (g->flags & Amask) {
 	case A1 & Amask:
 		printf("MultipleSubs2: \"tails\" %.*s tail1\n",
-		       plen - 1, prefix);
+		       (int)plen - 1, prefix);
 		break;
 	case A2 & Amask:
 		printf("MultipleSubs2: \"tails\" %.*s tail2\n",
-		       plen - 1, prefix);
+		       (int)plen - 1, prefix);
 		break;
 	case A3 & Amask:
 		printf("MultipleSubs2: \"tails\" %.*s tail3\n",
-		       plen - 1, prefix);
+		       (int)plen - 1, prefix);
 		break;
 	case AFI & Amask:
 		printf("Substitution2: \"finaisol\" %sfina\n",
