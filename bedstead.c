@@ -106,6 +106,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define XSIZE 6
@@ -1355,18 +1356,31 @@ vec_sub(vec v1, vec v2)
 }
 
 static int
+gcd(int a, int b)
+{
+	int t;
+	while (b != 0) {
+		t = b;
+		b = a % b;
+		a = t;
+	}
+	return a;
+}
+
+/* Return the shortest representable vector parallel to the argument. */
+static vec
 vec_bearing(vec v)
 {
-
-	if (v.x == 0 && v.y > 0) return 0;
-	if (v.x == v.y && v.x > 0) return 1;
-	if (v.x > 0 && v.y == 0) return 2;
-	if (v.x == -v.y && v.x > 0) return 3;
-	if (v.x == 0 && v.y < 0) return 4;
-	if (v.x == v.y && v.x < 0) return 5;
-	if (v.x < 0 && v.y == 0) return 6;
-	if (v.x == -v.y && v.x < 0) return 7;
-	return -1;
+	vec ret;
+	int d = gcd(abs(v.x), abs(v.y));
+	if (d != 0) {
+		ret.x = v.x / d;
+		ret.y = v.y / d;
+	} else {
+		ret.x = 0;
+		ret.y = 0;
+	}
+	return ret;
 }
 
 /* If p is identical to its successor, remove p. */
@@ -1383,8 +1397,8 @@ static int
 vec_inline3(vec a, vec b, vec c)
 {
 	return
-	    vec_bearing(vec_sub(b, a)) == vec_bearing(vec_sub(c, b)) &&
-	    vec_bearing(vec_sub(b, a)) != -1;
+	    vec_eqp(vec_bearing(vec_sub(b, a)), vec_bearing(vec_sub(c, b))) &&
+	    !vec_eqp(vec_bearing(vec_sub(b, a)), zero);
 }
 
 /* Are a, b, c, and d distinct collinear points in that order? */
@@ -1421,8 +1435,8 @@ fix_edges(point *a0, point *b0)
 	assert(a1->prev == a0); assert(b1->prev == b0);
 	assert(a0 != a1); assert(a0 != b0);
 	assert(a1 != b1); assert(b0 != b1);
-	if (vec_bearing(vec_sub(a0->v, a1->v)) ==
-	    vec_bearing(vec_sub(b1->v, b0->v)) &&
+	if (vec_eqp(vec_bearing(vec_sub(a0->v, a1->v)),
+		    vec_bearing(vec_sub(b1->v, b0->v))) &&
 	    (vec_inline4(a0->v, b1->v, a1->v, b0->v) ||
 	     vec_inline4(a0->v, b1->v, b0->v, a1->v) ||
 	     vec_inline4(b1->v, a0->v, b0->v, a1->v) ||
