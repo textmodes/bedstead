@@ -116,6 +116,10 @@
 #define XPIX 100
 #define YPIX 100
 
+/* Position of diagonal lines within pixels */
+#define XQTR (XPIX/4)
+#define YQTR (YPIX/4)
+
 void doprologue(void);
 void dochar(char const data[YSIZE], unsigned flags);
 
@@ -1279,7 +1283,7 @@ dolookups(struct glyph const *g)
 }
 
 typedef struct vec {
-	signed char x, y;
+	int x, y;
 } vec;
 
 typedef struct point {
@@ -1481,7 +1485,7 @@ emit_path()
 			started = 1;
 			do {
 				printf(" %d %d %s 1\n",
-				    p->v.x*XPIX/4, p->v.y*YPIX/4 - 3*YPIX,
+				    p->v.x, p->v.y - 3*YPIX,
 				    p == &points[i] && p->next ? "m" : "l");
 				p1 = p->next;
 				p->prev = p->next = NULL;
@@ -1495,46 +1499,48 @@ emit_path()
 static void
 blackpixel(int x, int y, int bl, int br, int tr, int tl)
 {
-	x *= 4; y *= 4;
+	x *= XPIX; y *= YPIX;
 
 	if (bl)	moveto(x, y);
-	else { moveto(x+1, y); lineto(x, y+1); }
-	if (tl) lineto(x, y+4);
-	else { lineto(x, y+3); lineto(x+1, y+4); }
-	if (tr) lineto(x+4, y+4);
-	else { lineto(x+3, y+4); lineto(x+4, y+3); }
-	if (br) lineto(x+4, y);
-	else { lineto(x+4, y+1); lineto(x+3, y); }
+	else { moveto(x+XQTR, y); lineto(x, y+YQTR); }
+	if (tl) lineto(x, y+YPIX);
+	else { lineto(x, y+YPIX-YQTR); lineto(x+XQTR, y+YPIX); }
+	if (tr) lineto(x+XPIX, y+YPIX);
+	else { lineto(x+XPIX-XQTR, y+YPIX); lineto(x+XPIX, y+YPIX-YQTR); }
+	if (br) lineto(x+XPIX, y);
+	else { lineto(x+XPIX, y+YQTR); lineto(x+XPIX-XQTR, y); }
 	closepath();
 }
 
 static void
 whitepixel(int x, int y, int bl, int br, int tr, int tl)
 {
-	x *= 4; y *= 4;
+	x *= XPIX; y *= YPIX;
 
 	if (bl) {
-		moveto(x, y); lineto(x, y+3);
-		if (br) { lineto(x+2, y+1); lineto(x+1, y); }
-		else lineto(x+3, y);
+		moveto(x, y); lineto(x, y+YPIX-YQTR);
+		if (br) { lineto(x+XPIX/2, y+YQTR); lineto(x+XQTR, y); }
+		else lineto(x+XPIX-XQTR, y);
 		closepath();
 	}
 	if (tl) {
-		moveto(x, y+4); lineto(x+3, y+4);
-		if (bl) { lineto(x+1, y+2); lineto(x, y+3); }
-		else lineto(x, y+1);
+		moveto(x, y+YPIX); lineto(x+XPIX-XQTR, y+YPIX);
+		if (bl) { lineto(x+XQTR, y+YPIX/2); lineto(x, y+YPIX-YQTR); }
+		else lineto(x, y+XQTR);
 		closepath();
 	}
 	if (tr) {
-		moveto(x+4, y+4); lineto(x+4, y+1);
-		if (tl) { lineto(x+2, y+3); lineto(x+3, y+4); }
-		else lineto(x+1, y+4);
+		moveto(x+XPIX, y+YPIX); lineto(x+XPIX, y+YQTR);
+		if (tl) { lineto(x+XPIX/2, y+YPIX-YQTR);
+			lineto(x+XPIX-XQTR, y+YPIX); }
+		else lineto(x+XQTR, y+YPIX);
 		closepath();
 	}
 	if (br) {
-		moveto(x+4, y); lineto(x+1, y);
-		if (tr) { lineto(x+3, y+2); lineto(x+4, y+1); }
-		else lineto(x+4, y+3);
+		moveto(x+XPIX, y); lineto(x+XQTR, y);
+		if (tr) { lineto(x+XPIX-XQTR, y+YPIX/2);
+			lineto(x+XPIX, y+YQTR); }
+		else lineto(x+XPIX, y+YPIX-YQTR);
 		closepath();
 	}
 }
