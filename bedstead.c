@@ -1367,6 +1367,7 @@ vec_bearing(vec v)
 	return -1;
 }
 
+/* If p is identical to its successor, remove p. */
 static void
 fix_identical(point *p)
 {
@@ -1375,6 +1376,7 @@ fix_identical(point *p)
 		killpoint(p);
 }
 
+/* Are a, b, and c distinct collinear points in that order? */
 static int
 vec_inline3(vec a, vec b, vec c)
 {
@@ -1383,12 +1385,14 @@ vec_inline3(vec a, vec b, vec c)
 	    vec_bearing(vec_sub(b, a)) != -1;
 }
 
+/* Are a, b, c, and d distinct collinear points in that order? */
 static int
 vec_inline4(vec a, vec b, vec c, vec d)
 {
 	return vec_inline3(a, b, c) && vec_inline3(b, c, d);
 }
 
+/* If p is on the line between its predecessor and successor, remove p. */
 static void
 fix_collinear(point *p)
 {
@@ -1397,6 +1401,7 @@ fix_collinear(point *p)
 		killpoint(p);
 }
 
+/* If p is the only point on its path, remove p. */
 static void
 fix_isolated(point *p)
 {
