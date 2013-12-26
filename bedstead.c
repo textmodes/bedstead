@@ -1519,26 +1519,27 @@ whitepixel(int x, int y, int bl, int br, int tr, int tl)
 
 	if (bl) {
 		moveto(x, y); lineto(x, y+YPIX-YQTR);
-		if (br) { lineto(x+XPIX/2, y+YQTR); lineto(x+XQTR, y); }
+		if (br) { lineto(x+XPIX/2, y+YPIX/2-YQTR); lineto(x+XQTR, y); }
 		else lineto(x+XPIX-XQTR, y);
 		closepath();
 	}
 	if (tl) {
 		moveto(x, y+YPIX); lineto(x+XPIX-XQTR, y+YPIX);
-		if (bl) { lineto(x+XQTR, y+YPIX/2); lineto(x, y+YPIX-YQTR); }
+		if (bl) { lineto(x+XPIX/2-XQTR, y+YPIX/2);
+			lineto(x, y+YPIX-YQTR); }
 		else lineto(x, y+XQTR);
 		closepath();
 	}
 	if (tr) {
 		moveto(x+XPIX, y+YPIX); lineto(x+XPIX, y+YQTR);
-		if (tl) { lineto(x+XPIX/2, y+YPIX-YQTR);
+		if (tl) { lineto(x+XPIX/2, y+YPIX/2+YQTR);
 			lineto(x+XPIX-XQTR, y+YPIX); }
 		else lineto(x+XQTR, y+YPIX);
 		closepath();
 	}
 	if (br) {
 		moveto(x+XPIX, y); lineto(x+XQTR, y);
-		if (tr) { lineto(x+XPIX-XQTR, y+YPIX/2);
+		if (tr) { lineto(x+XPIX/2+XQTR, y+YPIX/2);
 			lineto(x+XPIX, y+YQTR); }
 		else lineto(x+XPIX, y+YPIX-YQTR);
 		closepath();
