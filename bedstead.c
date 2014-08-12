@@ -1123,8 +1123,8 @@ main(int argc, char **argv)
 	printf("FullName: Bedstead\n");
 	printf("FamilyName: Bedstead\n");
 	printf("Weight: Medium\n");
-	printf("Copyright: Copyright 2009 Ben Harris and others\n");
-	printf("Version: 000.990\n");
+	printf("Copyright: Copyright 2009-2014 Ben Harris and others\n");
+	printf("Version: 001.000\n");
 	printf("ItalicAngle: 0\n");
 	printf("UnderlinePosition: %d\n", -YPIX / 2);
 	printf("UnderlineWidth: %d\n", YPIX);
