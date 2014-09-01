@@ -113,20 +113,38 @@
 #define XSIZE 6
 #define YSIZE 10
 
+/*
+ * Design parameters.  These can vary between fonts in the Bedstead family.
+ */
+
+struct param {
+	char const * fontname;
+	char const * fullname;
+	int xpix;
+	int ttfwidth;
+};
+
+struct param default_param = {
+	"Bedstead", "Bedstead",
+	100,		/* xpix */
+	5,		/* ttfwidth */
+};
+
+struct param extended_param = {
+	"Bedstead-Extended", "Bedstead Extended",
+	124,		/* xpix */
+	7,		/* ttfwidth */
+};
+
+struct param *param = &default_param;
+
 /* Size of pixels in font design units (usually 1000/em) */
-int XPIX = 100;
-#define XPIX_EXTENDED 124;
+#define XPIX (param->xpix)
 #define YPIX 100
 
 /* Position of diagonal lines within pixels */
 #define XQTR (XPIX/4)
 #define YQTR (YPIX/4)
-
-/* Metadata */
-char const * FONTNAME = "Bedstead";
-#define FONTNAME_EXTENDED "Bedstead-Extended";
-char const * FULLNAME = "Bedstead";
-#define FULLNAME_EXTENDED "Bedstead Extended";
 
 void doprologue(void);
 void dochar(char const data[YSIZE], unsigned flags);
@@ -1100,9 +1118,7 @@ main(int argc, char **argv)
 
 	while (argc > 1) {
 		if (strcmp(argv[1], "--extended") == 0) {
-			XPIX = XPIX_EXTENDED;
-			FONTNAME = FONTNAME_EXTENDED;
-			FULLNAME = FULLNAME_EXTENDED;
+			param = &extended_param;
 			argv++; argc--;
 		} else if (strcmp(argv[1], "--") == 0) {
 			argv++; argc--;
@@ -1144,8 +1160,8 @@ main(int argc, char **argv)
 		if (glyphs[i].unicode == -1)
 			extraglyphs++;
 	printf("SplineFontDB: 3.0\n");
-	printf("FontName: %s\n", FONTNAME);
-	printf("FullName: %s\n", FULLNAME);
+	printf("FontName: %s\n", param->fontname);
+	printf("FullName: %s\n", param->fullname);
 	printf("FamilyName: Bedstead\n");
 	printf("Weight: Medium\n");
 	printf("Copyright: Copyright 2009-2014 Ben Harris and others\n");
@@ -1155,6 +1171,7 @@ main(int argc, char **argv)
 	printf("UnderlineWidth: %d\n", YPIX);
 	printf("Ascent: %d\n", 8 * YPIX);
 	printf("Descent: %d\n", 2 * YPIX);
+	printf("TTFWidth: %d\n", param->ttfwidth);
 	printf("LayerCount: 2\n");
 	printf("Layer: 0 0 \"Back\" 1\n");
 	printf("Layer: 1 0 \"Fore\" 0\n");
