@@ -1164,6 +1164,7 @@ main(int argc, char **argv)
 	printf("FullName: %s\n", param->fullname);
 	printf("FamilyName: Bedstead\n");
 	printf("Weight: Medium\n");
+	printf("OS2_WeightWidthSlopeOnly: 1\n");
 	printf("Copyright: Copyright 2009-2014 Ben Harris and others\n");
 	printf("Version: 001.000\n");
 	printf("ItalicAngle: 0\n");
