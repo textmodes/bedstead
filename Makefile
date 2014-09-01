@@ -1,7 +1,10 @@
-all: bedstead.otf sample.png title.png bedstead-10-df.png bedstead-20-df.png
+all: bedstead.otf bedstead-ext.otf sample.png title.png bedstead-10-df.png bedstead-20-df.png
 
 bedstead.sfd: bedstead
 	./bedstead > bedstead.sfd
+
+bedstead-ext.sfd: bedstead
+	./bedstead --extended > bedstead-ext.sfd
 
 %.otf %-10.bdf %-20.bdf: %.sfd
 	fontforge -lang=ff \

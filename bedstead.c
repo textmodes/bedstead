@@ -104,6 +104,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,12 +114,19 @@
 #define YSIZE 10
 
 /* Size of pixels in font design units (usually 1000/em) */
-#define XPIX 100
+int XPIX = 100;
+#define XPIX_EXTENDED 124;
 #define YPIX 100
 
 /* Position of diagonal lines within pixels */
 #define XQTR (XPIX/4)
 #define YQTR (YPIX/4)
+
+/* Metadata */
+char const * FONTNAME = "Bedstead";
+#define FONTNAME_EXTENDED "Bedstead-Extended";
+char const * FULLNAME = "Bedstead";
+#define FULLNAME_EXTENDED "Bedstead Extended";
 
 void doprologue(void);
 void dochar(char const data[YSIZE], unsigned flags);
@@ -1088,9 +1096,26 @@ main(int argc, char **argv)
 	int i;
 	int const nglyphs = sizeof(glyphs) / sizeof(glyphs[0]);
 	int extraglyphs = 0;
+	char *endptr;
+
+	while (argc > 1) {
+		if (strcmp(argv[1], "--extended") == 0) {
+			XPIX = XPIX_EXTENDED;
+			FONTNAME = FONTNAME_EXTENDED;
+			FULLNAME = FULLNAME_EXTENDED;
+			argv++; argc--;
+		} else if (strcmp(argv[1], "--") == 0) {
+			argv++; argc--;
+			break;
+		} else if (argv[1][0] == '-') {
+			fprintf(stderr, "unknown option '%s'\n", argv[1]);
+			return 1;
+		} else break;
+		argv++; argc--;
+	}
 
         if (argc > 1) {
-                char data[YSIZE], *endptr;
+                char data[YSIZE];
                 int i, y;
                 unsigned long u;
 
@@ -1119,8 +1144,8 @@ main(int argc, char **argv)
 		if (glyphs[i].unicode == -1)
 			extraglyphs++;
 	printf("SplineFontDB: 3.0\n");
-	printf("FontName: Bedstead\n");
-	printf("FullName: Bedstead\n");
+	printf("FontName: %s\n", FONTNAME);
+	printf("FullName: %s\n", FULLNAME);
 	printf("FamilyName: Bedstead\n");
 	printf("Weight: Medium\n");
 	printf("Copyright: Copyright 2009-2014 Ben Harris and others\n");
@@ -1527,7 +1552,7 @@ whitepixel(int x, int y, int bl, int br, int tr, int tl)
 		moveto(x, y+YPIX); lineto(x+XPIX-XQTR, y+YPIX);
 		if (bl) { lineto(x+XPIX/2-XQTR, y+YPIX/2);
 			lineto(x, y+YPIX-YQTR); }
-		else lineto(x, y+XQTR);
+		else lineto(x, y+YQTR);
 		closepath();
 	}
 	if (tr) {
