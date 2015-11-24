@@ -5,7 +5,7 @@
  * probably owned by the European Broadcasting Union or one of its
  * members.  Other than that, the file is covered by the following:
  *
- * Copyright (c) 2009 Ben Harris.
+ * Copyright (c) 2009-2015 Ben Harris.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation files
@@ -1167,8 +1167,8 @@ main(int argc, char **argv)
 	printf("FamilyName: Bedstead\n");
 	printf("Weight: Medium\n");
 	printf("OS2_WeightWidthSlopeOnly: 1\n");
-	printf("Copyright: Copyright 2009-2014 Ben Harris and others\n");
-	printf("Version: 001.000\n");
+	printf("Copyright: Copyright 2009-2015 Ben Harris and others\n");
+	printf("Version: 001.001\n");
 	printf("ItalicAngle: 0\n");
 	printf("UnderlinePosition: %d\n", -YPIX / 2);
 	printf("UnderlineWidth: %d\n", YPIX);
