@@ -1,4 +1,5 @@
-all: bedstead.otf bedstead-ext.otf sample.png title.png bedstead-10-df.png bedstead-20-df.png
+all: bedstead.otf bedstead-ext.otf sample.png title.png extended.png \
+     bedstead-10-df.png bedstead-20-df.png
 
 bedstead.sfd: bedstead
 	./bedstead > bedstead.sfd
@@ -13,8 +14,9 @@ bedstead-ext.sfd: bedstead
 %.pfa %.afm: %.sfd
 	fontforge -lang=ff -c 'Open($$1); Generate($$2)' $< $@
 
-%.png: %.ps bedstead.pfa
-	gs -q -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 -o $@ bedstead.pfa $<
+%.png: %.ps bedstead.pfa bedstead-ext.pfa
+	gs -q -dSAFER -sDEVICE=pnggray -dTextAlphaBits=4 -o $@ \
+		bedstead.pfa bedstead-ext.pfa $<
 
 bedstead-%-df.png: df.ps bedstead.pfa
 	gs -q -dSAFER -dsize=$* -sDEVICE=png16m -o $@ bedstead.pfa $<
@@ -25,6 +27,7 @@ clean:
 
 DISTFILES = bedstead.c Makefile \
 	bedstead.sfd bedstead.otf bedstead.pfa bedstead.afm \
+	bedstead-ext.sfd bedstead-ext.otf bedstead-ext.pfa bedstead-ext.afm \
 	bedstead-10.bdf bedstead-20.bdf \
 	bedstead-10-df.png bedstead-20-df.png
 
