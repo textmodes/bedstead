@@ -1,9 +1,16 @@
 /*
- * Some of the character bitmaps below are likely to be subject to
- * copyright owned by Mullard's corporate successors, who are likely
- * to be NXP Semiconductors.  Copyright in the Arabic glyphs is
- * probably owned by the European Broadcasting Union or one of its
- * members.  Other than that, the file is covered by the following:
+ * Many of the character bitmaps below formed the typeface embodied in
+ * the SAA5050 series of character-generator chips originally made and
+ * sold by British company Mullard in the early 1980s.  Copyright in the
+ * typeface will still be owned by Mullard's corporate successors, but
+ * under section 55 of the Copyright Designs and Patents Act 1988 that
+ * copyright is no longer infringed by the production or use of
+ * articles specifically designed or adapted for producing material in
+ * that typeface.
+ *
+ * Copyright in the Arabic glyphs is probably owned by the European
+ * Broadcasting Union or one of its members.  Other than that, the
+ * file is covered by the following:
  *
  * Copyright (c) 2009-2015 Ben Harris.
  *
