@@ -1094,7 +1094,7 @@ struct glyph {
 
 static void dolookups(struct glyph const *);
 
-inline int
+static inline int
 getpix(char const data[YSIZE], int x, int y, unsigned flags) {
 
 	if (y == 5 && ((x <= 0 && (flags & ALX)) ||
