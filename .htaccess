@@ -1,1 +1,2 @@
 AddType application/font-sfnt;outlines=CFF;layout=OTF .otf
+AddType application/vnd.font-fontforge-sfd .sfd
