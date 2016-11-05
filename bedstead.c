@@ -8,9 +8,6 @@
  * articles specifically designed or adapted for producing material in
  * that typeface.
  *
- * Copyright in the Arabic glyphs is probably owned by the European
- * Broadcasting Union or one of its members.
- *
  * The rest of the glyphs, and all of the code in this file, were
  * written by Ben Harris <bjh21@bjh21.me.uk> between 2009 and 2015.
  *
@@ -92,10 +89,6 @@
  * There are some extra glyphs included as well, some derived from
  * standard ones and some made from whole cloth.  They are built on
  * the same 5x9 matrix as the originals, and processed in the same way.
- * In general, they leave the left column and bottom row of a 6x10 box
- * empty, but there is one exception: Arabic glyphs which connect to
- * the left have one pixel set in the left column, on the assumption
- * that a decent Arabic character generator would have to do this too.
  */
 
 #include <assert.h>
@@ -151,15 +144,6 @@ struct glyph {
 	char const *name;
 	unsigned int flags;
 #define SC  0x01 /* Character has a small-caps variant. */
-/* Arabic classes */
-#define ARX 0x100 /* Arabic glyph joins to the right */
-#define ALX 0x200 /* Arabic glyph joins to the left */
-#define ADX 0x300 /* Arabic glyph joins on both sides */
-#define Amask 0xf0
-#define A1  0x310 /* Dual-joining Arabic character with upwards tail. */
-#define A2  0x320 /* Dual-joining Arabic character with downwards tail. */
-#define A3  0x330 /* Dual-joining Arabic character with loopy tail. */
-#define AFI 0x340 /* Dual-joining Arabic character with special X_n/X_r form. */
 } const glyphs[] = {
  /*
   * The first batch of glyphs comes from the code tables at the end of
@@ -414,99 +398,6 @@ struct glyph {
  {{000,000,014,022,006,022,014,000,000}, 0x044d }, /* e */
  {{000,000,025,025,025,025,037,001,000}, 0x0449 }, /* shcha */
  {{000,000,021,021,021,017,001,000,000}, 0x0447 }, /* che */
-
-#ifdef ARABIC
- /*
-  * The second batch of glyphs was found in the appendices to
-  * "Displayable Character Sets for Broadcast Teletext", EBU Tech
-  * 3232-E, second edition, June 1982, as examples of rendering
-  * characters in a 5x9 matrix.
-  */
- /* ASV-CODAR glyphs from Appendix 3 */
- {{001,001,001,001,001,001,000,000,000}, 0x0627 }, /* alef */
- {{000,000,000,001,001,037,000,004,000}, 0x0628, 0, A1 }, /* beh */
- {{000,012,000,001,001,077,000,000,000}, 0x062a }, /* teh */
- {{004,012,000,001,001,037,000,000,000}, 0x062b, 0, A1 }, /* theh */
- {{000,000,010,024,002,037,000,004,000}, 0x062c, 0, A2 }, /* jeem */
- {{000,000,010,024,002,037,000,000,000}, 0x062d, 0, A2 }, /* hah */
- {{004,000,010,024,002,037,000,000,000}, 0x062e, 0, A2 }, /* khah */
- {{000,004,002,001,001,017,000,000,000}, 0x062f }, /* dal */
- {{001,004,002,001,001,017,000,000,000}, 0x0630 }, /* thal */
- {{000,000,000,001,001,001,002,004,010}, 0x0631 }, /* reh */
- {{000,004,000,001,001,001,002,004,010}, 0x0632 }, /* zain */
- {{000,000,000,025,025,037,000,000,000}, 0x0633, 0, A3 }, /* seen */
- {{004,012,000,025,025,037,000,000,000}, 0x0634, 0, A3 }, /* sheen */
- {{000,000,000,007,011,037,000,000,000}, 0x0635, 0, A3 }, /* sad */
- {{000,004,000,007,011,037,000,000,000}, 0x0636, 0, A3 }, /* dad */
- {{010,010,010,017,011,037,000,000,000}, 0x0637 }, /* tah */
- {{010,010,010,017,011,037,000,000,000}, 0xfec4, "uni0637.medi", ALX },
- {{010,012,010,017,011,037,000,000,000}, 0x0638 }, /* zah */
- {{010,012,010,017,011,037,000,000,000}, 0xfec8, "uni0638.medi", ALX },
- {{000,000,006,010,010,037,000,000,000}, 0x0639, 0, A2 }, /* ain */
- {{004,000,006,010,010,037,000,000,000}, 0x063a, 0, A2 }, /* ghain */
- {{002,000,002,005,003,037,000,000,000}, 0x0641, 0, A1 }, /* feh */
- {{012,000,002,005,003,037,000,000,000}, 0x0642, 0, A1 }, /* qaf */
- {{001,002,004,016,001,037,000,000,000}, 0x0643, 0, A1 }, /* kaf */
- {{001,001,001,001,001,037,000,000,000}, 0x0644, 0, A1 }, /* lam */
- {{000,000,000,000,006,031,006,000,000}, 0x0645, 0, A2 }, /* meem */
- {{000,000,000,000,006,031,006,000,000}, 0xfee4, "uni0645.medi", A2|ARX },
- {{000,004,000,001,001,037,000,000,000}, 0x0646, 0, A1 }, /* noon */
- {{000,006,001,015,013,037,000,000,000}, 0x0647, 0, AFI }, /* heh */
- {{000,000,000,003,005,007,001,001,016}, 0x0648 }, /* waw */
- {{000,000,000,001,001,037,000,012,000}, 0x064a, 0, AFI }, /* yeh */
- {{000,000,006,010,010,006,010,000,000}, 0x0621 }, /* hamza */
- {{000,000,000,003,025,025,034,000,012}, 0xfef2, "uni064A.fina" }, /* yeh */
- {{000,000,000,003,025,025,034,000,000}, 0x0649 }, /* alef maksura */
- {{000,000,001,003,005,017,000,000,000}, 0xfeea, "uni0647.fina" }, /* heh */
- {{000,024,001,003,005,017,000,000,000}, 0x0629 }, /* teh marbuta */
-
- {{015,011,015,001,001,001,000,000,000}, 0x0623 }, /* hamza on alef */
- {{001,001,001,001,015,011,014,000,000}, 0x0625 }, /* hamza under alef */
- {{017,010,001,001,001,001,001,000,000}, 0x0622 }, /* madda on alef */
- {{014,010,014,001,001,037,000,000,000}, -1, "asvcodar37", A1 },
- {{014,010,014,000,003,005,024,022,036}, 0x0626 }, /* hamza on yeh */
- {{030,020,030,003,005,007,001,001,016}, 0x0624 }, /* hamza on waw */
-
- {{007,000,000,000,000,000,000,000,000}, 0xfe76, "uni0020064E.isol" },
- {{007,000,000,000,000,037,000,000,000}, 0xfe77, "uni0640064E.medi", ADX },
- {{003,001,002,000,000,000,000,000,000}, 0xfe78, "uni0020064F.isol" },
- {{003,001,002,000,000,037,000,000,000}, 0xfe79, "uni0640064F.medi", ADX },
- {{000,000,000,000,000,000,000,000,007}, 0xfe7a, "uni00200650.isol" },
- {{000,000,000,000,000,037,000,000,007}, 0xfe7b, "uni06400650.medi", ADX },
- {{007,000,005,007,000,000,000,000,000}, -1, "asvcodar46" },
- {{003,001,002,000,005,007,000,000,000}, -1, "asvcodar47" },
- {{005,007,000,007,000,000,000,000,000}, -1, "asvcodar48" },
- {{005,007,000,007,000,037,000,000,000}, -1, "asvcodar49", ADX },
- {{007,000,005,007,000,037,000,000,000}, -1, "asvcodar50", ADX },
- {{005,007,000,000,000,037,000,000,000}, 0xfe7d, "uni06400651.medi", ADX },
- {{005,007,000,000,000,000,000,000,000}, 0xfe7c, "uni00200651.isol" },
- {{002,005,002,000,000,000,000,000,000}, 0xfe7e, "uni00200652.isol" },
- {{002,005,002,000,000,037,000,000,000}, 0xfe7f, "uni06400652.medi", ADX },
- {{016,016,000,000,000,000,000,000,000}, 0xfe70, "uni0020064B.isol" },
- {{033,011,022,000,000,000,000,000,000}, -1, "asvcodar56" },
- {{000,000,000,000,000,000,000,016,016}, 0xfe74, "uni0020064D.isol" },
- {{030,010,025,007,000,037,000,000,000}, -1, "asvcodar58", ADX },
- {{007,007,005,007,000,000,000,000,000}, -1, "asvcodar59" },
- {{033,011,022,000,005,007,000,000,000}, -1, "asvcodar60" },
- {{012,016,000,016,016,000,000,000,000}, -1, "asvcodar61" },
-
- {{014,010,002,005,003,037,000,000,000}, 0x06a4, 0, A1 }, /* veh */
- {{000,000,000,001,001,037,000,012,004}, 0x067e, 0, A1 }, /* peh */
- {{005,012,024,016,001,037,000,000,000}, 0x06af, 0, A1 }, /* gaf */
-
- /* Arabic-Indic digits from Appendix 9 */
- {{000,000,000,004,000,000,000,000,000}, 0x0660 }, /* zero */
- {{000,004,004,004,004,004,000,000,000}, 0x0661 }, /* one */
- {{000,012,014,010,010,010,000,000,000}, 0x0662 }, /* two */
- {{000,025,032,020,020,020,000,000,000}, 0x0663 }, /* three */
- {{000,006,010,006,010,006,000,000,000}, 0x0664 }, /* four */
- {{000,016,021,021,021,016,000,000,000}, 0x0665 }, /* five */
- {{000,016,002,002,002,002,000,000,000}, 0x0666 }, /* six */
- {{000,021,021,012,012,004,000,000,000}, 0x0667 }, /* seven */
- {{000,004,012,012,021,021,000,000,000}, 0x0668 }, /* eight */
- {{000,014,022,016,002,002,000,000,000}, 0x0669 }, /* nine */
- /* Appendix 9 also contains a Hebrew alphabet, but we've already got one. */
-#endif
 
  /*
   * The third batch of glyphs were specially designed for this font.
@@ -921,13 +812,6 @@ struct glyph {
  {{000,002,037,004,037,010,000,000,000}, 0x2260, "notequal" },
  {{000,034,010,011,027,010,000,000,000}, 0x1f681 }, /* helicopter */
 
-#ifdef ARABIC
- /* Arabic tails */
- {{000,000,000,001,001,001,000,000,000}, -1, "tail1", ARX },
- {{000,000,000,000,000,001,002,002,001}, -1, "tail2", ARX },
- {{000,000,000,002,002,001,000,000,000}, -1, "tail3", ARX },
-#endif
-
  /* This is getting silly. */
  {{000,000,016,021,037,021,021,000,000}, -1, "a.sc" },
  {{000,000,036,021,036,021,036,000,000}, -1, "b.sc" },
@@ -1095,11 +979,9 @@ struct glyph {
 static void dolookups(struct glyph const *);
 
 static inline int
-getpix(char const data[YSIZE], int x, int y, unsigned flags) {
+getpix(char const data[YSIZE], int x, int y, unsigned flags)
+{
 
-	if (y == 5 && ((x <= 0 && (flags & ALX)) ||
-		(x >= XSIZE && (flags & ARX))))
-		return 1;
 	if (x < 0 || x >= XSIZE || y < 0 || y >= YSIZE)
 		return 0;
 	else
@@ -1186,7 +1068,7 @@ main(int argc, char **argv)
 	/* Force monochrome at 10 and 20 pixels, and greyscale elsewhere. */
 	printf("GaspTable: 5 9 2 10 0 19 3 20 0 65535 3\n");
 	printf("Lookup: 1 0 0 \"salt: stylistic alternates\" {\"salt\"} "
-	    "['salt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
+	    "['salt' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"ss01: SAA5051 forms\" {\"ss01\"} "
 	    "['ss01' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("OtfFeatName: 'ss01' 1033 \"SAA5051\"\n");
@@ -1197,18 +1079,13 @@ main(int argc, char **argv)
 	    "['ss04' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("OtfFeatName: 'ss04' 1033 \"SAA5054\"\n");
 	printf("Lookup: 3 0 0 \"aalt: all alternates\" {\"aalt\"} "
-	    "['aalt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
+	    "['aalt' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 257 0 0 \"palt: proportional metrics\" {\"palt\"} "
-	    "['palt' ('DFLT' <'dflt'> 'arab' <'dflt'> 'latn' <'dflt'>)]\n");
+	    "['palt' ('DFLT' <'dflt'> 'latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"smcp: lower-case to small caps\" {\"smcp\"} "
 	    "['smcp' ('latn' <'dflt'>)]\n");
 	printf("Lookup: 1 0 0 \"c2sc: upper-case to small caps\" {\"c2sc\"} "
 	    "['c2sc' ('latn' <'dflt'>)]\n");
-	printf("Lookup: 2 0 0 \"fina/isol: Arabic tails\" {\"tails\"} "
-	    "['fina' ('arab' <'dflt'>) 'isol' ('arab' <'dflt'>)]\n");
-	printf("Lookup: 1 0 0 \"fina/isol: Arabic final/isolated form\" "
-	    "{\"finaisol\"} "
-	    "['fina' ('arab' <'dflt'>) 'isol' ('arab' <'dflt'>)]\n");
 	printf("BeginChars: %d %d\n", 65536 + extraglyphs, nglyphs);
 	extraglyphs = 0;
 	for (i = 0; i < nglyphs; i++) {
@@ -1302,24 +1179,6 @@ dolookups(struct glyph const *g)
 		printf("Substitution2: \"%s\" %c%ssc\n",
 		    isupper((unsigned char)prefix[0]) ? "c2sc" : "smcp",
 		    tolower((unsigned char)prefix[0]), prefix + 1);
-	switch (g->flags & Amask) {
-	case A1 & Amask:
-		printf("MultipleSubs2: \"tails\" %.*s tail1\n",
-		       (int)plen - 1, prefix);
-		break;
-	case A2 & Amask:
-		printf("MultipleSubs2: \"tails\" %.*s tail2\n",
-		       (int)plen - 1, prefix);
-		break;
-	case A3 & Amask:
-		printf("MultipleSubs2: \"tails\" %.*s tail3\n",
-		       (int)plen - 1, prefix);
-		break;
-	case AFI & Amask:
-		printf("Substitution2: \"finaisol\" %sfina\n",
-			prefix);
-		break;
-	}
 	dopalt(g);
 }
 
