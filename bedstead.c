@@ -9,30 +9,19 @@
  * that typeface.
  *
  * Copyright in the Arabic glyphs is probably owned by the European
- * Broadcasting Union or one of its members.  Other than that, the
- * file is covered by the following:
+ * Broadcasting Union or one of its members.
  *
- * Copyright (c) 2009-2015 Ben Harris.
+ * The rest of the glyphs, and all of the code in this file, were
+ * written by Ben Harris <bjh21@bjh21.me.uk> between 2009 and 2015.
  *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation files
- * (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge,
- * publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
+ * To the extent possible under law, the Ben Harris has dedicated all
+ * copyright and related and neighboring rights to this software and
+ * the embodied typeface to the public domain worldwide. This software
+ * and typeface are distributed without any warranty.
  *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
- * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software. If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 /*
  * This is a program to construct an outline font from a bitmap.  It's
