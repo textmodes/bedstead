@@ -1,12 +1,3 @@
-Pixel aspect ratios: http://www.lurkertech.com/lg/video-systems/#sqnonsq
-
-In 480i, industry convention is that you get square pixels with a pixel
-clock of 12+3/11 MHz.  In 576i, you need 14.75 MHz.  The SAA5050 takes a
-nominal 6MHz clock and uses both edges to output subpixels (duty cycle
-between 0.4 and 0.6).  This means that the nominal pixel aspect ratios
-are 12+3/11:12 for 480i and 14.75:12 for 576i.  These correspond to
-pixel widths of 102.3 and 122.9 respectively.
-
 Precise pixel layouts for mosaic graphics:
 
 Based on a 6x10 grid of pixels:

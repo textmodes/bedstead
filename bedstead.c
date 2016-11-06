@@ -104,6 +104,24 @@
 
 /*
  * Design parameters.  These can vary between fonts in the Bedstead family.
+ *
+ * To faithfully represent the output of an SAA5050, we need to know a
+ * little about TV pixel aspect ratios:
+ *
+ * http://www.lurkertech.com/lg/video-systems/#sqnonsq
+ *
+ * The SAA5050 can be used to drive both 480i ("NTSC") and 576i
+ * ("PAL") displays.  In 480i, industry convention is that you get
+ * square pixels with a pixel clock of 12+3/11 MHz.  In 576i, you need
+ * 14.75 MHz.  The SAA5050 takes a nominal 6MHz clock and uses both
+ * edges to output subpixels (duty cycle between 0.4 and 0.6).  This
+ * means that the nominal pixel aspect ratios are 12+3/11:12 for 480i
+ * and 14.75:12 for 576i.  These correspond to pixel widths of 102.3
+ * and 122.9 respectively.
+ *
+ * 102.3 is close enough to 100 that we may as well just use square
+ * pixels, which will work better on modern displays.  We round 122.9
+ * to 124 so that XQTR will be precisely an integer.
  */
 
 struct param {
