@@ -9,7 +9,8 @@
  * that typeface.
  *
  * The rest of the glyphs, and all of the code in this file, were
- * written by Ben Harris <bjh21@bjh21.me.uk> between 2009 and 2016.
+ * written by Ben Harris <bjh21@bjh21.me.uk> and Simon Tatham
+ * <anakin@pobox.com> between 2009 and 2016.
  *
  * To the extent possible under law, the Ben Harris has dedicated all
  * copyright and related and neighboring rights to this software and
