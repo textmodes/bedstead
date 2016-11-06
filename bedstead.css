@@ -1,6 +1,15 @@
-/* Trivial stylesheet to use Bedstead as a monospace font */
+/* Trivial stylesheet to use Bedstead everywhere. */
+
+/* Use Bedstead with proportional spacing for everything. */
+body {
+    font-family: Bedstead;
+    font-feature-settings: "palt";
+}
+
+/* Except where it's conventional to use a monospaced version. */
 kbd, code, tt, pre {
-    font-family: Bedstead, monospace;
+    font-family: Bedstead, monospace;    
+    font-feature-settings: "palt" off;
 }
 
 @font-face {
