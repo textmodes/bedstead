@@ -1117,8 +1117,8 @@ main(int argc, char **argv)
 	printf("OS2SupXSize: %d\n", YSIZE * YPIX * 3 / (XSIZE - 1));
 	printf("OS2SubYSize: %d\n", YSIZE * YPIX * 5 / (YSIZE - 3));
 	printf("OS2SupYSize: %d\n", YSIZE * YPIX * 5 / (YSIZE - 3));
-	printf("OS2SubXOff: %d\n", XPIX + XPIX * 3 / (XSIZE - 1));
-	printf("OS2SupXOff: %d\n", XPIX + XPIX * 3 / (XSIZE - 1));
+	printf("OS2SubXOff: 0\n");
+	printf("OS2SupXOff: 0\n");
 	printf("OS2SubYOff: %d\n", 2 * YPIX);
 	printf("OS2SupYOff: %d\n", 2 * YPIX);
 	printf("TTFWidth: %d\n", param->ttfwidth);
