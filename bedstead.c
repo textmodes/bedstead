@@ -1108,8 +1108,19 @@ main(int argc, char **argv)
 	printf("ItalicAngle: 0\n");
 	printf("UnderlinePosition: %d\n", -YPIX / 2);
 	printf("UnderlineWidth: %d\n", YPIX);
+	printf("OS2StrikeYPos: %d\n", 3 * YPIX);
+	printf("OS2StrikeYSize: %d\n", YPIX);
 	printf("Ascent: %d\n", 8 * YPIX);
 	printf("Descent: %d\n", 2 * YPIX);
+	/* Sub/Superscript are three by five pixels */
+	printf("OS2SubXSize: %d\n", YSIZE * YPIX * 3 / (XSIZE - 1));
+	printf("OS2SupXSize: %d\n", YSIZE * YPIX * 3 / (XSIZE - 1));
+	printf("OS2SubYSize: %d\n", YSIZE * YPIX * 5 / (YSIZE - 3));
+	printf("OS2SupYSize: %d\n", YSIZE * YPIX * 5 / (YSIZE - 3));
+	printf("OS2SubXOff: %d\n", XPIX + XPIX * 3 / (XSIZE - 1));
+	printf("OS2SupXOff: %d\n", XPIX + XPIX * 3 / (XSIZE - 1));
+	printf("OS2SubYOff: %d\n", -2 * YPIX);
+	printf("OS2SupYOff: %d\n", 2 * YPIX);
 	printf("TTFWidth: %d\n", param->ttfwidth);
 	printf("LayerCount: 2\n");
 	printf("Layer: 0 0 \"Back\" 1\n");
