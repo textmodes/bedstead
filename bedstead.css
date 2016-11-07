@@ -8,8 +8,8 @@ body {
 
 /* Except where it's conventional to use a monospaced version. */
 kbd, code, tt, pre {
-    font-family: Bedstead, monospace;    
-    font-feature-settings: "palt" off;
+    font-family: Bedstead, monospace;
+    font-feature-settings: normal;
 }
 
 @font-face {
