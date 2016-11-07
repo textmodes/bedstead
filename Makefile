@@ -25,7 +25,7 @@ bedstead-%-df.png: df.ps bedstead.pfa
 clean:
 	rm -f bedstead *.sfd *.otf *.bdf *.pfa *.png
 
-DISTFILES = bedstead.c Makefile \
+DISTFILES = bedstead.c Makefile COPYING \
 	bedstead.sfd bedstead.otf bedstead.pfa bedstead.afm \
 	bedstead-ext.sfd bedstead-ext.otf bedstead-ext.pfa bedstead-ext.afm \
 	bedstead-10.bdf bedstead-20.bdf \
