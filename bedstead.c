@@ -156,6 +156,7 @@ struct param *param = &default_param;
 
 void doprologue(void);
 void dochar(char const data[YSIZE], unsigned flags);
+static void domosaic(unsigned code, bool sep);
 
 struct glyph {
 	char data[YSIZE];
@@ -163,6 +164,7 @@ struct glyph {
 	char const *name;
 	unsigned int flags;
 #define SC  0x01 /* Character has a small-caps variant. */
+#define MOS 0x02 /* Mosaic graphics character */
 } const glyphs[] = {
  /*
   * The first batch of glyphs comes from the code tables at the end of
@@ -999,9 +1001,29 @@ struct glyph {
  {{000,037,004,024,014,004,000,000,000}, 0x2961 },
  /* Miscellaneous symbols and arrows */
  {{000,025,000,021,000,025,000,000,000}, 0x2b1a }, /* dottedsquare */
+ /* Private use */
+ /* U+EE00--U+EE7F: zvbi mosaic graphics */
+#define M(x) {{(x)}, 0xee00 + (x), NULL, MOS}
+ M(0x00), M(0x01), M(0x02), M(0x03), M(0x04), M(0x05), M(0x06), M(0x07),
+ M(0x08), M(0x09), M(0x0a), M(0x0b), M(0x0c), M(0x0d), M(0x0e), M(0x0f),
+ M(0x10), M(0x11), M(0x12), M(0x13), M(0x14), M(0x15), M(0x16), M(0x17),
+ M(0x18), M(0x19), M(0x1a), M(0x1b), M(0x1c), M(0x1d), M(0x1e), M(0x1f),
+ M(0x20), M(0x21), M(0x22), M(0x23), M(0x24), M(0x25), M(0x26), M(0x27),
+ M(0x28), M(0x29), M(0x2a), M(0x2b), M(0x2c), M(0x2d), M(0x2e), M(0x2f),
+ M(0x30), M(0x31), M(0x32), M(0x33), M(0x34), M(0x35), M(0x36), M(0x37),
+ M(0x38), M(0x39), M(0x3a), M(0x3b), M(0x3c), M(0x3d), M(0x3e), M(0x3f),
+ M(0x40), M(0x41), M(0x42), M(0x43), M(0x44), M(0x45), M(0x46), M(0x47),
+ M(0x48), M(0x49), M(0x4a), M(0x4b), M(0x4c), M(0x4d), M(0x4e), M(0x4f),
+ M(0x50), M(0x51), M(0x52), M(0x53), M(0x54), M(0x55), M(0x56), M(0x57),
+ M(0x58), M(0x59), M(0x5a), M(0x5b), M(0x5c), M(0x5d), M(0x5e), M(0x5f),
+ M(0x60), M(0x61), M(0x62), M(0x63), M(0x64), M(0x65), M(0x66), M(0x67),
+ M(0x68), M(0x69), M(0x6a), M(0x6b), M(0x6c), M(0x6d), M(0x6e), M(0x6f),
+ M(0x70), M(0x71), M(0x72), M(0x73), M(0x74), M(0x75), M(0x76), M(0x77),
+ M(0x78), M(0x79), M(0x7a), M(0x7b), M(0x7c), M(0x7d), M(0x7e), M(0x7f),
  /* Specials */
  {{016,021,025,011,016,012,016,000,000}, 0xfffd }, /* replacement */
  {{037,021,021,021,021,021,037,000,000}, -1, ".notdef" },
+
  /* Transport and map symbols */
  {{000,034,010,011,027,010,000,000,000}, 0x1f681 }, /* helicopter */
 
@@ -1170,7 +1192,11 @@ main(int argc, char **argv)
 		printf("Flags: W\n");
 		printf("LayerCount: 2\n");
 		dolookups(&glyphs[i]);
-		dochar(glyphs[i].data, glyphs[i].flags);
+		if (glyphs[i].flags & MOS)
+			domosaic(glyphs[i].data[0],
+				 (glyphs[i].data[0] & 0x20) != 0);
+		else
+			dochar(glyphs[i].data, glyphs[i].flags);
 		printf("EndChar\n");
 	}
 	printf("EndChars\n");
@@ -1185,6 +1211,7 @@ dopalt(struct glyph const *g)
 	unsigned char cols = 0;
 	int dx = 0, dh = 0;
 
+	if (g->flags & MOS) return;
 	/*
 	 * For proportional layout, we'd like a left side-bearing of
 	 * one pixel, and a right side-bearing of zero.  Space
@@ -1563,6 +1590,30 @@ dochar(char const data[YSIZE], unsigned flags)
 			}
 		}
 	}
+	clean_path();
+	emit_path();
+}
+
+static void
+tile(int x0, int y0, int x1, int y1)
+{
+	x0 *= XPIX; y0 *= YPIX;
+	x1 *= XPIX; y1 *= YPIX;
+	moveto(x0, y0); lineto(x0, y1); lineto(x1, y1); lineto(x1, y0);
+	closepath();
+}
+	
+static void
+domosaic(unsigned code, bool sep)
+{
+
+	clearpath();
+	if (code & 1)  tile(0 + sep, 8 + sep, 3, 11);
+	if (code & 2)  tile(3 + sep, 8 + sep, 6, 11);
+	if (code & 4)  tile(0 + sep, 4 + sep, 3, 8);
+	if (code & 8)  tile(3 + sep, 4 + sep, 6, 8);
+	if (code & 16) tile(0 + sep, 1 + sep, 3, 4);
+	if (code & 64) tile(3 + sep, 1 + sep, 6, 4);
 	clean_path();
 	emit_path();
 }
