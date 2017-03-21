@@ -10,7 +10,7 @@
  *
  * The rest of the glyphs, and all of the code in this file, were
  * written by Ben Harris <bjh21@bjh21.me.uk> and Simon Tatham
- * <anakin@pobox.com> between 2009 and 2016.
+ * <anakin@pobox.com> between 2009 and 2017.
  *
  * To the extent possible under law, the Ben Harris has dedicated all
  * copyright and related and neighboring rights to this software and
@@ -703,6 +703,7 @@ struct glyph {
  {{000,000,000,000,000,011,011,022,000}, 0x201e, "quotedblbase" },
  {{022,022,011,000,000,000,000,000,000}, 0x201f }, /* quotedblreversed */
  {{000,000,016,016,016,000,000,000,000}, 0x2022, "bullet" },
+ {{025,021,012,004,025,004,012,021,025}, 0x203b }, /* referencemark */
  {{012,012,012,012,012,000,012,000,000}, 0x203c, "exclamdbl" },
  /* Subscripts and superscripts */
  {{004,012,012,012,004,000,000,000,000}, 0x2070 }, /* zerosuperior */
