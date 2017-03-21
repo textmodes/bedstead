@@ -12,7 +12,7 @@
  * written by Ben Harris <bjh21@bjh21.me.uk> and Simon Tatham
  * <anakin@pobox.com> between 2009 and 2017.
  *
- * To the extent possible under law, the Ben Harris has dedicated all
+ * To the extent possible under law, Ben Harris has dedicated all
  * copyright and related and neighboring rights to this software and
  * the embodied typeface to the public domain worldwide. This software
  * and typeface are distributed without any warranty.
