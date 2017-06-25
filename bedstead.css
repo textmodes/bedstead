@@ -4,6 +4,7 @@
 body {
     font-family: Bedstead;
     font-feature-settings: "palt";
+    font-synthesis: none;
 }
 
 /* Except where it's conventional to use a monospaced version. */
