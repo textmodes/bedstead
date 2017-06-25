@@ -12,10 +12,10 @@
  * written by Ben Harris <bjh21@bjh21.me.uk> and Simon Tatham
  * <anakin@pobox.com> between 2009 and 2017.
  *
- * To the extent possible under law, Ben Harris has dedicated all
- * copyright and related and neighboring rights to this software and
- * the embodied typeface to the public domain worldwide. This software
- * and typeface are distributed without any warranty.
+ * To the extent possible under law, Ben Harris and Simon Tatham have
+ * dedicated all copyright and related and neighboring rights to this
+ * software and the embodied typeface to the public domain worldwide.
+ * This software and typeface are distributed without any warranty.
  *
  * You should have received a copy of the CC0 Public Domain Dedication
  * along with this software. If not, see
