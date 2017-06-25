@@ -1127,7 +1127,7 @@ main(int argc, char **argv)
 	printf("Weight: Medium\n");
 	printf("OS2_WeightWidthSlopeOnly: 1\n");
 	printf("Copyright: Dedicated to the public domain\n");
-	printf("Version: 001.001\n");
+	printf("Version: 001.002\n");
 	printf("ItalicAngle: 0\n");
 	printf("UnderlinePosition: %d\n", -YPIX / 2);
 	printf("UnderlineWidth: %d\n", YPIX);
